@@ -314,7 +314,7 @@ function storeSession(sess, keep){ session = sess; try { localStorage.removeItem
 function authHeaders(){ return { "apikey": SB_KEY, "Content-Type": "application/json" }; }
 function signIn(email, password){
   return fetch(SB_URL + "/auth/v1/token?grant_type=password", { method:"POST", headers: authHeaders(), body: JSON.stringify({ email:email, password:password }) })
-    .then(function(r){ return r.json().then(function(j){ if (!r.ok || !j.access_token) throw new Error(j.error_description || j.msg || "auth"); return { access_token:j.access_token, refresh_token:j.refresh_token, expires_at: Date.now() + (j.expires_in||3600)*1000, email:(j.user&&j.user.email)||email }; }); });
+    .then(function(r){ return r.json().then(function(j){ if (!r.ok || !j.access_token) throw new Error(j.error_code === "email_not_confirmed" ? "Account not confirmed yet. Ask Mex." : (j.msg || j.error_description || "Couldn't sign in.")); return { access_token:j.access_token, refresh_token:j.refresh_token, expires_at: Date.now() + (j.expires_in||3600)*1000, email:(j.user&&j.user.email)||email }; }); });
 }
 function refresh(){
   if (!session || !session.refresh_token) return Promise.reject();
@@ -332,7 +332,7 @@ document.getElementById("gform").addEventListener("submit", function(ev){
   btn.disabled = true; btn.textContent = "Signing in…"; err.hidden = true;
   signIn(document.getElementById("gemail").value.trim(), document.getElementById("gpass").value).then(function(sess){
     storeSession(sess, document.getElementById("gkeep").checked); document.getElementById("gpass").value = ""; openApp();
-  }).catch(function(){ err.hidden = false; }).then(function(){ btn.disabled = false; btn.textContent = "Sign in"; });
+  }).catch(function(e){ err.textContent = (e && e.message && e.message !== "Invalid login credentials") ? e.message : "Email or password didn't match."; err.hidden = false; }).then(function(){ btn.disabled = false; btn.textContent = "Sign in"; });
 });
 document.getElementById("signout").addEventListener("click", signOut);
 
