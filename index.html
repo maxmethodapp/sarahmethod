@@ -336,6 +336,111 @@ document.getElementById("gform").addEventListener("submit", function(ev){
 });
 document.getElementById("signout").addEventListener("click", signOut);
 
+function d(s){ var p = s.split("-"); return new Date(p[0], p[1]-1, p[2]); }
+function addDays(dt, n){ var x = new Date(dt); x.setDate(x.getDate()+n); return x; }
+function ymd(dt){ return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0"); }
+var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtKm(lo, hi){ return lo === hi ? lo.toFixed(1) + " km" : lo.toFixed(1) + "–" + hi.toFixed(1) + " km"; }
+function fmtMin(m){ var h = Math.floor(m/60), r = m % 60; return h ? h + " h " + (r ? r + " min" : "") : m + " min"; }
+var today = ymd(new Date());
+var ICON = {
+  run:'M13 4.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM7 22l3-6 4-2-2-4M14 10l3 1 3-1M10 14l-2-3-3 1',
+  complete:'M5 12.5l4.5 4.5L19 7', calendar:'M5 5h14v15H5zM5 9h14M9 3v4M15 3v4', close:'M6 6l12 12M18 6L6 18', recovery:'M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z', flag:'M6 21V4M6 4h12l-2.5 4L18 12H6', clock:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 7v5l3 2', load:'M4 20V10M9 20V4M14 20v-7M19 20V8'
+};
+function icon(n, size, color){ return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" style="display:block;flex:none"><path d="'+ICON[n]+'" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+
+function stats(){
+  var weeks = Math.max(0, Math.round((d(RACE) - new Date()) / 6048e5));
+  var logged = 0, cur = null;
+  PLAN.forEach(function(w){ var lo=0,hi=0,plan=false; w.sessions.forEach(function(s){ if (s.km){ if (s.done) logged += s.km[0]; else plan = true; lo+=s.km[0]; hi+=s.km[1]; } }); if (plan && !cur) cur = [lo,hi]; });
+  var sv = document.getElementById("stats");
+  sv.innerHTML = [
+    ['flag', weeks, 'wks', 'To race day'],
+    ['load', cur ? fmtKm(cur[0],cur[1]).replace(' km','') : '—', 'km', 'This week']
+  ].map(function(x){ return '<div class="card stat">'+icon(x[0],18,'#6E726F')+'<div class="v tnum">'+x[1]+'<small>'+x[2]+'</small></div><div class="lbl">'+x[3]+'</div></div>'; }).join('');
+}
+
+var root = document.getElementById("plan");
+function render(){
+  root.innerHTML = "";
+  PLAN.forEach(function(w, wi){
+    var start = d(w.start), end = addDays(start, 6);
+    var list = w.sessions.map(function(s, si){ return { s:s, si:si, day:(moves[wi] && moves[wi][si]) || s.day }; });
+    var byDay = {}; list.forEach(function(x){ (byDay[x.day] = byDay[x.day] || []).push(x); });
+    var lo=0, hi=0, mins=0; list.forEach(function(x){ if (x.s.km){ lo+=x.s.km[0]; hi+=x.s.km[1]; mins+=x.s.min||0; } });
+    var moved = moves[wi] && Object.keys(moves[wi]).length;
+    var sec = document.createElement("div");
+    sec.innerHTML = '<div class="sec"><span class="lbl">Week '+(wi+1)+' · '+start.getDate()+'–'+end.getDate()+' '+MON[end.getMonth()]+' · '+(w.focus||"")+'</span><span class="r"><b>'+fmtKm(lo,hi)+'</b> · '+fmtMin(mins)+(moved?'<button type="button" class="reset" id="w'+wi+'-reset">Reset days</button>':'')+'</span></div>';
+    var card = document.createElement("div"); card.className = "card wk";
+    var grid = document.createElement("div"); grid.className = "grid";
+    var selected = null;
+    DAYS.forEach(function(day, di){
+      var date = addDays(start, di), items = byDay[day] || [];
+      if (!items.length) items = [{ s:{rest:true}, si:-1, day:day }];
+      items.forEach(function(x){
+        var s = x.s, id = "w"+wi+"s"+x.si, isDone = !!(s.done || ticks[id]), inert = s.rest || s.tbc;
+        var c = document.createElement(inert ? "div" : "button"); if (!inert) c.type = "button";
+        c.className = "cell press" + (s.rest?" rest":"") + (s.tbc?" tbc":"") + (isDone?" done":"") + (ymd(date)===today?" today":"") + (sel===id?" sel":"");
+        var bar = s.z ? 'var(--z'+s.z+')' : 'var(--ink100)';
+        c.innerHTML = '<div class="dn"><span class="dow">'+day+'</span><span class="num tnum">'+date.getDate()+'</span>' + (inert ? '' : '<input class="chk" type="checkbox" id="'+id+'" aria-label="Done: '+s.title+'"'+(isDone?" checked":"")+(s.done?" disabled":"")+'>') + '</div>' +
+          '<div class="row"><span class="bar" style="background:'+bar+'"></span><div style="min-width:0"><div class="ttl">'+(s.rest?'Rest day':s.tbc?'To be confirmed':s.title)+'</div><div class="sub">'+(s.rest?'rest':s.tbc?'tbc':(s.type||'')+(s.sub?' · '+s.sub:''))+'</div></div></div>' +
+          (s.km ? '<div class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</div>' : '');
+        var k = c.querySelector(".chk");
+        if (k) { k.addEventListener("click", function(ev){ ev.stopPropagation(); }); k.addEventListener("change", function(){ ticks[id] = k.checked; save({tick:id}); render(); }); }
+        if (!inert) c.addEventListener("click", function(){ sel = (sel===id) ? null : id; render(); });
+        grid.appendChild(c);
+        if (sel===id) selected = { x:x, id:id, isDone:isDone, date:date };
+      });
+    });
+    card.appendChild(grid); sec.appendChild(card);
+    if (selected) sec.appendChild(detail(wi, selected));
+    var r = sec.querySelector(".reset"); if (r) r.addEventListener("click", function(){ var sis = moves[wi] || {}; delete moves[wi]; save({resetWeek:wi, sis:sis}); render(); });
+    root.appendChild(sec);
+  });
+  stats(); drawLoad();
+}
+
+function detail(wi, q){
+  var s = q.x.s, x = q.x, id = q.id, date = q.date, isDone = q.isDone;
+  var box = document.createElement("div"); box.className = "card det";
+  var total = (s.steps||[]).reduce(function(a,st){ return a + (st[4]||1); }, 0);
+  var prof = (s.steps||[]).map(function(st){ return '<i style="--zc:var(--z'+st[0]+');flex:'+(st[4]||1)+';height:'+(ZH[st[0]]*100)+'%"></i>'; }).join('');
+  var blocks = (s.steps||[]).map(function(st){ return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+st[3]+'</div></div><div class="d tnum">'+st[2]+'</div></div>'; }).join('');
+  var state = s.done ? ['mint','Completed'] : isDone ? ['mint','Done'] : ymd(date)===today ? ['mint','Today'] : ['slate','Upcoming'];
+  box.innerHTML =
+    '<div class="hd"><div><span class="lbl">'+x.day+' '+date.getDate()+' '+MON[date.getMonth()]+' · '+(s.z ? ZN[s.z] : '')+'</span><div class="disp">'+s.title+'</div>' +
+      '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink">'+s.min+"'"+'</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
+      (s.note ? '<div class="obj">'+s.note+'</div>' : '') + '</div>' +
+      '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
+    '<div class="prof">'+prof+'</div>' +
+    '<div class="blocks">'+blocks+'</div>' +
+    (s.done ? '' : '<div class="mv"><span class="lbl">Move to</span>' + DAYS.map(function(dd){ return '<button type="button" class="pk'+(dd===x.day?" on":"")+'" data-d="'+dd+'">'+dd.slice(0,1)+dd.slice(1).toLowerCase()+'</button>'; }).join('') + '</div>') +
+    '<div class="ft">' + (s.done ? '<div class="on">'+icon('complete',18,'#2E8A75')+'Logged run</div>' : '<button type="button" id="'+id+'-tog" class="'+(isDone?'on':'')+'">'+icon('complete',18,isDone?'#2E8A75':'#2A2E2D')+(isDone?'Marked done':'Mark as done')+'</button>') + '<button type="button" id="'+id+'-close">'+icon('close',18,'#2A2E2D')+'Close</button></div>';
+  box.querySelectorAll(".pk").forEach(function(b){ b.addEventListener("click", function(){ moves[wi] = moves[wi] || {}; moves[wi][x.si] = b.getAttribute("data-d"); save({move:wi+":"+x.si, day:moves[wi][x.si]}); render(); }); });
+  var tog = box.querySelector("#"+id+"-tog"); if (tog) tog.addEventListener("click", function(){ ticks[id] = !isDone; save({tick:id}); render(); });
+  box.querySelector("#"+id+"-close").addEventListener("click", function(){ sel = null; render(); });
+  return box;
+}
+
+function drawLoad(){
+  var el = document.getElementById("load-bars"); if (!el) return;
+  var weeks = [];
+  PLAN.forEach(function(w, wi){
+    var lo=0, hi=0, min=0, plan=false, logged=0, st=d(w.start);
+    w.sessions.forEach(function(x){ if (x.km){ lo+=x.km[0]; hi+=x.km[1]; min+=x.min||0; if (x.done) logged+=x.km[0]; else plan=true; } });
+    weeks.push({ wk:wi+1, label:st.getDate()+" "+MON[st.getMonth()], lo:lo, hi:hi, min:min, logged:logged, plan:plan, tbc:w.sessions.some(function(x){return x.tbc;}), cur: ymd(st)<=today && ymd(addDays(st,6))>=today });
+  });
+  var max = Math.max(10, Math.max.apply(null, weeks.map(function(w){ return w.hi; })));
+  el.innerHTML = weeks.map(function(w){
+    var l = w.logged/max*100, p = (w.lo-w.logged)/max*100, r = (w.hi-w.lo)/max*100;
+    var val = w.hi ? ((w.lo===w.hi ? w.lo.toFixed(1) : w.lo.toFixed(1)+"–"+w.hi.toFixed(1)) + (w.tbc?"+":"")) : "—";
+    return '<div class="lrow'+(w.cur?' cur':'')+'"><div class="wk">Week '+w.wk+'<small>'+w.label+(w.cur?' · now':'')+'</small></div><div class="trk">' +
+      (l>0?'<i class="l" style="width:'+l+'%"></i>':'') + (p>0?'<i class="p" style="width:'+p+'%"></i>':'') + (r>0?'<i class="r" style="width:'+r+'%"></i>':'') +
+      '</div><div class="v tnum"><b>'+val+' km</b><small>'+fmtMin(w.min)+'</small></div></div>';
+  }).join('');
+  var cur = weeks.filter(function(w){return w.cur;})[0] || weeks.filter(function(w){return w.plan;})[0];
+  if (cur) document.getElementById("load-sub").innerHTML = "This week <b>" + (cur.lo===cur.hi?cur.lo.toFixed(1):cur.lo.toFixed(1)+"–"+cur.hi.toFixed(1)) + " km</b> · " + fmtMin(cur.min);
+}
 loadSession();
 if (session) { ensureToken().then(openApp, function(){ storeSession(null); showGate(); }); } else showGate();
 </script>
