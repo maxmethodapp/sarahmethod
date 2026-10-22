@@ -260,6 +260,7 @@ function render(){
     var selected = null;
     DAYS.forEach(function(day, di){
       var date = addDays(start, di), items = byDay[day] || [];
+      if (items.some(function(x){ return !x.s.rest; })) items = items.filter(function(x){ return !x.s.rest; });
       if (!items.length) items = [{ s:{rest:true}, si:-1, day:day }];
       items.forEach(function(x){
         var s = x.s, id = "w"+wi+"s"+x.si, isDone = !!(s.done || ticks[id]), inert = s.rest || s.tbc;
