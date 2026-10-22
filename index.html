@@ -127,7 +127,6 @@ button{font:inherit;color:inherit}
 .legend i{width:12px;height:12px;border-radius:999px;display:inline-block}
 
 /* zones */
-.zwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .zcard{overflow:hidden}
 .zcard .zh{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--ink100)}
 .zcard .zh .lbl{font-size:9px}
@@ -138,7 +137,9 @@ button{font:inherit;color:inherit}
 .zr .t{flex:1;min-width:0}
 .zr .t .n{font-weight:700;font-size:13.5px}
 .zr .t .d{font-size:11.5px;line-height:1.45;color:var(--ink400);margin-top:2px}
-.zr .v{text-align:right;flex:none;min-width:58px}
+.zr .v{text-align:right;flex:none;min-width:84px}
+.zr .v.narrow{min-width:40px}
+@media (max-width:760px){.zr{flex-wrap:wrap}.zr .t{flex-basis:100%;order:-1;margin-left:16px}.zr .b{position:absolute;left:16px;top:11px;bottom:11px;min-height:0}.zr{position:relative;padding-left:32px}.zr .v{min-width:0;flex:1;text-align:left}}
 .zr .v .p{font-weight:700;font-size:15px;white-space:nowrap}
 .zr .v .s{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;color:var(--ink400);margin-top:2px}
 .znote{padding:11px 16px;border-top:1px solid var(--ink100);font-size:11.5px;color:var(--ink400);line-height:1.5}
@@ -157,7 +158,6 @@ button{font:inherit;color:inherit}
   .cell .bar{height:30px}
   .cell.today::after{border-radius:11px}
   .blocks{grid-template-columns:1fr}
-  .zwrap{grid-template-columns:1fr}
   .det .hd .disp{font-size:21px}
 }
 @media (prefers-reduced-motion:reduce){.press{transition:none}}
@@ -186,26 +186,14 @@ button{font:inherit;color:inherit}
     <div class="legend"><span><i style="background:var(--mint)"></i>Logged</span><span><i style="background:var(--ink200)"></i>Planned</span><span><i style="background:var(--ink100)"></i>Range</span></div>
   </div>
 
-  <div class="sec"><span class="lbl">Training zones</span><span class="r">LTHR 187 · Threshold 4:12/km</span></div>
-  <div class="zwrap">
-    <div class="card zcard">
-      <div class="zh"><span class="lbl">Heart rate + RPE · LTHR 187</span><span>BPM</span></div>
-      <div class="zr" style="--zc:var(--z1)"><span class="b"></span><div class="t"><div class="n">Z1 · Easy</div><div class="d">Barely working. Full conversation.</div></div><div class="v"><div class="p tnum">&lt;140</div><div class="s">&lt;75% · RPE 1–2</div></div></div>
-      <div class="zr" style="--zc:var(--z2)"><span class="b"></span><div class="t"><div class="n">Z2 · Aerobic endurance</div><div class="d">The base. All-day pace, full sentences.</div></div><div class="v"><div class="p tnum">140–159</div><div class="s">75–85% · RPE 2–3</div></div></div>
-      <div class="zr" style="--zc:var(--z3)"><span class="b"></span><div class="t"><div class="n">Z3 · Tempo</div><div class="d">Sustained pressure. A few words at a time.</div></div><div class="v"><div class="p tnum">160–178</div><div class="s">&gt;85–95% · RPE 4–5</div></div></div>
-      <div class="zr" style="--zc:var(--z4)"><span class="b"></span><div class="t"><div class="n">Z4 · Threshold</div><div class="d">Half to 10k pace. Hard but held.</div></div><div class="v"><div class="p tnum">179–191</div><div class="s">&gt;95–102% · RPE 6–8</div></div></div>
-      <div class="zr" style="--zc:var(--z5)"><span class="b"></span><div class="t"><div class="n">Z5 · VO2</div><div class="d">Short, very hard reps.</div></div><div class="v"><div class="p tnum">192+</div><div class="s">&gt;102% · RPE 9–10</div></div></div>
-      <div class="znote">HR lags 3–4 min on any effort. Feel leads, HR confirms. Efforts under ~90 s are paced on feel only.</div>
-    </div>
-    <div class="card zcard">
-      <div class="zh"><span class="lbl">Pace · % threshold speed · 4:12/km</span><span>MIN/KM</span></div>
-      <div class="zr" style="--zc:var(--z1)"><span class="b"></span><div class="t"><div class="n">Z1 · Easy</div><div class="d">Barely working. Full conversation.</div></div><div class="v"><div class="p tnum">5:51–8:25</div><div class="s">50–72%</div></div></div>
-      <div class="zr" style="--zc:var(--z2)"><span class="b"></span><div class="t"><div class="n">Z2 · Aerobic endurance</div><div class="d">The base. All-day pace, full sentences.</div></div><div class="v"><div class="p tnum">5:08–5:51</div><div class="s">&gt;72–82%</div></div></div>
-      <div class="zr" style="--zc:var(--z3)"><span class="b"></span><div class="t"><div class="n">Z3 · Tempo</div><div class="d">Sustained pressure. A few words at a time.</div></div><div class="v"><div class="p tnum">4:37–5:08</div><div class="s">&gt;82–91%</div></div></div>
-      <div class="zr" style="--zc:var(--z4)"><span class="b"></span><div class="t"><div class="n">Z4 · Threshold</div><div class="d">Half to 10k pace. Hard but held.</div></div><div class="v"><div class="p tnum">4:07–4:37</div><div class="s">&gt;91–102%</div></div></div>
-      <div class="zr" style="--zc:var(--z5)"><span class="b"></span><div class="t"><div class="n">Z5 · VO2</div><div class="d">Short, very hard reps.</div></div><div class="v"><div class="p tnum">&lt;4:07</div><div class="s">&gt;102%</div></div></div>
-      <div class="znote">Threshold pace = half pace × 0.97 (1:31:30 → 4:12/km). Flat, no wind. Trail and hills: go by feel and HR, not pace.</div>
-    </div>
+  <div class="sec"><span class="lbl">Training zones</span><span class="r">Threshold <b>4:12/km</b> · LTHR <b>187</b></span></div>
+  <div class="card zcard">
+      <div class="zr" style="--zc:var(--z1)"><span class="b"></span><div class="t"><div class="n">Z1 · Easy</div><div class="d">Barely working. Full conversation.</div></div><div class="v"><div class="p tnum">5:51–8:25</div><div class="s">min/km</div></div><div class="v"><div class="p tnum">&lt;140</div><div class="s">bpm</div></div><div class="v narrow"><div class="p tnum">1–2</div><div class="s">rpe</div></div></div>
+      <div class="zr" style="--zc:var(--z2)"><span class="b"></span><div class="t"><div class="n">Z2 · Aerobic endurance</div><div class="d">The base. All-day pace, full sentences.</div></div><div class="v"><div class="p tnum">5:08–5:51</div><div class="s">min/km</div></div><div class="v"><div class="p tnum">140–159</div><div class="s">bpm</div></div><div class="v narrow"><div class="p tnum">2–3</div><div class="s">rpe</div></div></div>
+      <div class="zr" style="--zc:var(--z3)"><span class="b"></span><div class="t"><div class="n">Z3 · Tempo</div><div class="d">Sustained pressure. A few words at a time.</div></div><div class="v"><div class="p tnum">4:37–5:08</div><div class="s">min/km</div></div><div class="v"><div class="p tnum">160–178</div><div class="s">bpm</div></div><div class="v narrow"><div class="p tnum">4–5</div><div class="s">rpe</div></div></div>
+      <div class="zr" style="--zc:var(--z4)"><span class="b"></span><div class="t"><div class="n">Z4 · Threshold</div><div class="d">Half to 10k pace. Hard but held.</div></div><div class="v"><div class="p tnum">4:07–4:37</div><div class="s">min/km</div></div><div class="v"><div class="p tnum">179–191</div><div class="s">bpm</div></div><div class="v narrow"><div class="p tnum">6–8</div><div class="s">rpe</div></div></div>
+      <div class="zr" style="--zc:var(--z5)"><span class="b"></span><div class="t"><div class="n">Z5 · VO2</div><div class="d">Short, very hard reps.</div></div><div class="v"><div class="p tnum">&lt;4:07</div><div class="s">min/km</div></div><div class="v"><div class="p tnum">192+</div><div class="s">bpm</div></div><div class="v narrow"><div class="p tnum">9–10</div><div class="s">rpe</div></div></div>
+    <div class="znote">HR lags 3–4 min on any effort. Feel leads, HR confirms. Efforts under ~90 s are paced on feel only. Trail and hills: go by feel and HR, not pace.</div>
   </div>
 
   <div class="foot"><span class="lbl">Coached by Mex · METHOD.</span><span class="lbl">Ticks and moved days are saved on this device only</span></div>
