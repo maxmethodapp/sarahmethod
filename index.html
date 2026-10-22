@@ -254,7 +254,7 @@ function render(){
     var moved = moves[wi] && Object.keys(moves[wi]).length;
     var sec = document.createElement("div");
     var isCur = ymd(start) <= today && ymd(end) >= today;
-    sec.innerHTML = '<div class="sec"><span class="lbl">Week '+(wi+1)+' · '+start.getDate()+'–'+end.getDate()+' '+MON[end.getMonth()]+(isCur ? ' <b style="color:var(--mint600)">· This week</b>' : '')+'</span><span class="r"><b>'+fmtKm(lo,hi)+'</b> · '+fmtMin(mins)+(moved?'<button type="button" class="reset" id="w'+wi+'-reset">Reset days</button>':'')+'</span></div>';
+    sec.innerHTML = '<div class="sec"><span class="lbl">Week '+(wi+1)+' · '+start.getDate()+'–'+end.getDate()+' '+MON[end.getMonth()]+(isCur ? ' <b style="color:var(--mint600)">· This week</b>' : '')+'</span><span class="r"><b>'+fmtKm(lo,hi)+'</b> · '+fmtMin(mins)+'</span></div>';
     var card = document.createElement("div"); card.className = "card wk";
     var grid = document.createElement("div"); grid.className = "grid";
     var selected = null;
@@ -279,7 +279,6 @@ function render(){
     });
     card.appendChild(grid); sec.appendChild(card);
     if (selected) sec.appendChild(detail(wi, selected));
-    var r = sec.querySelector(".reset"); if (r) r.addEventListener("click", function(){ var sis = moves[wi] || {}; delete moves[wi]; save({resetWeek:wi, sis:sis}); render(); });
     root.appendChild(sec);
   });
   stats(); drawLoad();
