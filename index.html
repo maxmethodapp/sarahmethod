@@ -228,12 +228,17 @@ var ICON = {
 function icon(n, size, color){ return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" style="display:block;flex:none"><path d="'+ICON[n]+'" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
 
 function stats(){
-  var weeks = Math.max(0, Math.round((d(RACE) - new Date()) / 6048e5));
-  var logged = 0, cur = null;
-  PLAN.forEach(function(w){ var lo=0,hi=0,plan=false; w.sessions.forEach(function(s){ if (s.km){ if (s.done) logged += s.km[0]; else plan = true; lo+=s.km[0]; hi+=s.km[1]; } }); if (plan && !cur) cur = [lo,hi]; });
+  var days = Math.max(0, Math.ceil((d(RACE) - new Date()) / 864e5)), weeks = Math.floor(days/7);
+  var cur = null, next = null;
+  PLAN.forEach(function(w, wi){
+    var st = d(w.start), isCur = ymd(st) <= today && ymd(addDays(st,6)) >= today, lo=0, hi=0;
+    w.sessions.forEach(function(x, si){ if (x.km){ if (x.done || ticks["w"+wi+"s"+si]) { lo+=x.km[1]; hi+=x.km[1]; } else { lo+=x.km[0]; hi+=x.km[1]; } } });
+    if (isCur) cur = [lo,hi]; else if (!next && ymd(st) > today) next = [lo,hi];
+  });
+  cur = cur || next;
   var sv = document.getElementById("stats");
   sv.innerHTML = [
-    ['flag', weeks, 'wks', 'To race day'],
+    ['flag', weeks, 'wks ' + (days%7) + ' d', 'To race day'],
     ['load', cur ? fmtKm(cur[0],cur[1]).replace(' km','') : '—', 'km', 'This week']
   ].map(function(x){ return '<div class="card stat">'+icon(x[0],18,'#6E726F')+'<div class="v tnum">'+x[1]+'<small>'+x[2]+'</small></div><div class="lbl">'+x[3]+'</div></div>'; }).join('');
 }
@@ -248,7 +253,8 @@ function render(){
     var lo=0, hi=0, mins=0; list.forEach(function(x){ if (x.s.km){ lo+=x.s.km[0]; hi+=x.s.km[1]; mins+=x.s.min||0; } });
     var moved = moves[wi] && Object.keys(moves[wi]).length;
     var sec = document.createElement("div");
-    sec.innerHTML = '<div class="sec"><span class="lbl">Week '+(wi+1)+' · '+start.getDate()+'–'+end.getDate()+' '+MON[end.getMonth()]+'</span><span class="r"><b>'+fmtKm(lo,hi)+'</b> · '+fmtMin(mins)+(moved?'<button type="button" class="reset" id="w'+wi+'-reset">Reset days</button>':'')+'</span></div>';
+    var isCur = ymd(start) <= today && ymd(end) >= today;
+    sec.innerHTML = '<div class="sec"><span class="lbl">Week '+(wi+1)+' · '+start.getDate()+'–'+end.getDate()+' '+MON[end.getMonth()]+(isCur ? ' <b style="color:var(--mint600)">· This week</b>' : '')+'</span><span class="r"><b>'+fmtKm(lo,hi)+'</b> · '+fmtMin(mins)+(moved?'<button type="button" class="reset" id="w'+wi+'-reset">Reset days</button>':'')+'</span></div>';
     var card = document.createElement("div"); card.className = "card wk";
     var grid = document.createElement("div"); grid.className = "grid";
     var selected = null;
