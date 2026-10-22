@@ -246,7 +246,7 @@ var PLAN = [
     { day:"SUN", rest:true }
   ]},
   { start:"2026-10-26", focus:"Threshold", sessions:[
-    { day:"MON", z:2, type:"Endurance", title:"Endurance 7.3–8 km + strides", sub:"Z2 · 3 × 50 m", km:[7.4,8.1], min:43,
+    { day:"MON", z:2, type:"Endurance", title:"Endurance 7.3–8 km + strides", sub:"Z2 · 3 × 50 m strides · 200 m jog between", km:[7.4,8.1], min:43,
       steps:[[2,"Endurance","7.3–8.0 km","Z2 · 5:00–5:30",40],[4,"Strides","3 × 50 m","to finish · 200 m jog between",3]] },
     { day:"TUE", tbc:true },
     { day:"WED", z:4, type:"Threshold", title:"4 × 1.2 km threshold", sub:"9.2–9.4 km · 4:10–4:20", km:[9.2,9.4], min:43,
@@ -254,7 +254,10 @@ var PLAN = [
       note:"RPE 7–8. Even pace across all four. Ignore HR on the reps." },
     { day:"THU", z:2, type:"Endurance", title:"Endurance 11–12 km", sub:"Z2", km:[10.9,12.0], min:60,
       steps:[[2,"Endurance","10.9–12.0 km","Z2 · 5:00–5:30",60]], note:"Easy after yesterday. If legs are heavy, bottom of the band." },
-    { day:"FRI", tbc:true }, { day:"SAT", tbc:true }, { day:"SUN", tbc:true }
+    { day:"FRI", tbc:true },
+    { day:"SAT", z:1, type:"Easy", title:"Easy 4.8–6.8 km", sub:"40' Z1", km:[4.8,6.8], min:40,
+      steps:[[1,"Easy","4.8–6.8 km","Z1 · 5:51–8:25",40]], note:"Properly easy. Slower than feels natural." },
+    { day:"SUN", tbc:true }
   ]}
 ];
 var RACE = "2026-12-12";
