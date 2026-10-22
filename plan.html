@@ -199,7 +199,7 @@ button{font:inherit;color:inherit}
   <div class="sec"><span class="lbl">Weekly load</span><span class="r" id="load-sub"></span></div>
   <div class="card load">
     <div class="bars" id="load-bars"></div>
-    <div class="legend"><span><i style="background:var(--mint)"></i>Logged</span><span><i style="background:var(--ink200)"></i>Planned</span><span><i style="background:var(--ink100)"></i>Range</span></div>
+    <div class="legend"><span><i style="background:var(--mint)"></i>Done</span><span><i style="background:var(--ink200)"></i>Planned</span><span><i style="background:var(--ink100)"></i>Range</span></div>
   </div>
 
   <div class="sec"><span class="lbl">Training zones</span><span class="r">% of threshold speed <b>4:12/km</b> · LTHR <b>187</b></span></div>
@@ -410,7 +410,7 @@ function drawLoad(){
   var weeks = [];
   PLAN.forEach(function(w, wi){
     var lo=0, hi=0, min=0, plan=false, logged=0, st=d(w.start);
-    w.sessions.forEach(function(x){ if (x.km){ lo+=x.km[0]; hi+=x.km[1]; min+=x.min||0; if (x.done) logged+=x.km[0]; else plan=true; } });
+    w.sessions.forEach(function(x, si){ if (x.km){ lo+=x.km[0]; hi+=x.km[1]; min+=x.min||0; if (x.done || ticks["w"+wi+"s"+si]) logged+=x.km[0]; else plan=true; } });
     weeks.push({ wk:wi+1, label:st.getDate()+" "+MON[st.getMonth()], lo:lo, hi:hi, min:min, logged:logged, plan:plan, tbc:w.sessions.some(function(x){return x.tbc;}), cur: ymd(st)<=today && ymd(addDays(st,6))>=today });
   });
   var max = Math.max(10, Math.max.apply(null, weeks.map(function(w){ return w.hi; })));
