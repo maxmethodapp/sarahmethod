@@ -248,7 +248,7 @@ function render(){
     var lo=0, hi=0, mins=0; list.forEach(function(x){ if (x.s.km){ lo+=x.s.km[0]; hi+=x.s.km[1]; mins+=x.s.min||0; } });
     var moved = moves[wi] && Object.keys(moves[wi]).length;
     var sec = document.createElement("div");
-    sec.innerHTML = '<div class="sec"><span class="lbl">Week '+(wi+1)+' · '+start.getDate()+'–'+end.getDate()+' '+MON[end.getMonth()]+' · '+(w.focus||"")+'</span><span class="r"><b>'+fmtKm(lo,hi)+'</b> · '+fmtMin(mins)+(moved?'<button type="button" class="reset" id="w'+wi+'-reset">Reset days</button>':'')+'</span></div>';
+    sec.innerHTML = '<div class="sec"><span class="lbl">Week '+(wi+1)+' · '+start.getDate()+'–'+end.getDate()+' '+MON[end.getMonth()]+'</span><span class="r"><b>'+fmtKm(lo,hi)+'</b> · '+fmtMin(mins)+(moved?'<button type="button" class="reset" id="w'+wi+'-reset">Reset days</button>':'')+'</span></div>';
     var card = document.createElement("div"); card.className = "card wk";
     var grid = document.createElement("div"); grid.className = "grid";
     var selected = null;
