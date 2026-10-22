@@ -147,6 +147,10 @@ button{font:inherit;color:inherit}
 
 @media (max-width:760px){
   .head{grid-template-columns:1fr}
+  .sec{flex-wrap:wrap;gap:4px 12px}
+  .sec .lbl{white-space:normal;line-height:1.5}
+  .top .lbl{font-size:9px}
+  .lrow .wk small{white-space:normal}
   .stats{gap:8px}
   .stat .v{font-size:19px}
   .grid{grid-template-columns:1fr;gap:2px}
@@ -293,6 +297,8 @@ function detail(wi, q){
   box.querySelectorAll(".pk").forEach(function(b){ b.addEventListener("click", function(){ moves[wi] = moves[wi] || {}; moves[wi][x.si] = b.getAttribute("data-d"); save({move:wi+":"+x.si, day:moves[wi][x.si]}); render(); }); });
   var tog = box.querySelector("#"+id+"-tog"); if (tog) tog.addEventListener("click", function(){ ticks[id] = !isDone; save({tick:id}); render(); });
   box.querySelector("#"+id+"-close").addEventListener("click", function(){ sel = null; render(); });
+  box.querySelector(".hd").addEventListener("click", function(){ sel = null; render(); });
+  box.querySelector(".hd").style.cursor = "pointer";
   return box;
 }
 
