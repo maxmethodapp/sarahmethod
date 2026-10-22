@@ -230,7 +230,7 @@ var PLAN = [
     { day:"THU", z:2, type:"Logged", done:true, title:"Endurance 4.7 km", sub:"4:57/km · 23:23", km:[4.7,4.7], min:23,
       steps:[[2,"Endurance","4.7 km","4:57/km",23]], note:"Quicker through the run. Easier than this next time." },
     { day:"FRI", z:1, type:"Shakeout", title:"Shakeout + strides", sub:"3.5 km Z1 · 3 × 50 m", km:[4.9,5.8], min:33,
-      steps:[[1,"Easy","3.5 km","Z1 · 5:45+",20],[4,"Strides","3 × 50 m","fast, relaxed · 200 m jog between",3],[1,"Easy","0.9–1.8 km","Z1",8]], note:"Pre-Parkrun. Keep it very easy." },
+      steps:[[1,"Easy","3.5 km","Z1 · 5:45+",20],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","easy",1]}],[1,"Easy","0.9–1.8 km","Z1",8]], note:"Pre-Parkrun. Keep it very easy." },
     { day:"SAT", z:4, type:"Parkrun", title:"Parkrun 5 km", sub:"free effort", km:[5,5], min:25,
       steps:[[4,"Parkrun","5 km","run it how you feel",25]], note:"No target." },
     { day:"SUN", rest:true }
@@ -241,7 +241,7 @@ var PLAN = [
     { day:"TUE", z:2, type:"Endurance", title:"Endurance 5.5–6 km", sub:"Z2", km:[5.5,6.0], min:30,
       steps:[[2,"Endurance","5.5–6.0 km","Z2 · 4:56–5:50",30]] },
     { day:"WED", z:2, type:"Endurance", title:"Endurance 6.5–7 km + strides", sub:"Z2 · 3 × 50 m", km:[6.5,7.1], min:38,
-      steps:[[2,"Endurance","6.4–7.0 km","Z2 · 4:56–5:50",35],[4,"Strides","3 × 50 m","fast, relaxed · 200 m jog between",3]], note:"Strides fast and relaxed, not a sprint." },
+      steps:[[2,"Endurance","6.4–7.0 km","Z2 · 4:56–5:50",35],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","easy",1]}]], note:"Strides fast and relaxed, not a sprint." },
     { day:"THU", rest:true },
     { day:"FRI", rest:true },
     { day:"SAT", z:3, type:"Tempo", title:"3 × 1.7 km tempo", sub:"8.8–9.6 km · 4:28–4:40", km:[8.8,9.6], min:45,
@@ -251,7 +251,7 @@ var PLAN = [
   ]},
   { start:"2026-10-26", focus:"Threshold", sessions:[
     { day:"MON", z:2, type:"Endurance", title:"Endurance 7.3–8 km + strides", sub:"Z2 · 3 × 50 m strides · 200 m jog between", km:[7.4,8.1], min:43,
-      steps:[[2,"Endurance","7.3–8.0 km","Z2 · 4:56–5:50",40],[4,"Strides","3 × 50 m","to finish · 200 m jog between",3]] },
+      steps:[[2,"Endurance","7.3–8.0 km","Z2 · 4:56–5:50",40],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","easy",1]}]] },
     { day:"TUE", tbc:true },
     { day:"WED", z:4, type:"Threshold", title:"4 × 1.2 km threshold", sub:"8.2–9.3 km · 4:12–4:25", km:[8.2,9.3], min:43,
       steps:[[2,"Warm-up","1.7–1.9 km","Z2 · 4:56–5:50",10],[4,"Threshold","1.1–1.2 km","95–100% threshold · 4:12–4:25",5],[1,"Jog","0.3–0.4 km","easy",2],[4,"Threshold","1.1–1.2 km","4:12–4:25",5],[1,"Jog","0.3–0.4 km","easy",2],[4,"Threshold","1.1–1.2 km","4:12–4:25",5],[1,"Jog","0.3–0.4 km","easy",2],[4,"Threshold","1.1–1.2 km","4:12–4:25",5],[2,"Cool-down","1.2–1.4 km","Z2",7]],
@@ -381,13 +381,22 @@ function render(){
   stats(); drawLoad();
 }
 
+function expand(steps){
+  var out = [];
+  (steps||[]).forEach(function(st){
+    var o = st[5];
+    if (o && o.reps) { for (var i = 0; i < o.reps; i++) { out.push(st.slice(0,5)); if (o.rec && i < o.reps - 1) out.push(o.rec); } }
+    else out.push(st);
+  });
+  return out;
+}
 function detail(wi, q){
   var s = q.x.s, x = q.x, id = q.id, date = q.date, isDone = q.isDone;
   var box = document.createElement("div"); box.className = "card det";
-  var total = (s.steps||[]).reduce(function(a,st){ return a + (st[4]||1); }, 0);
-  var prof = (s.steps||[]).map(function(st){ return '<i style="--zc:var(--z'+st[0]+');flex:'+(st[4]||1)+';height:'+(ZH[st[0]]*100)+'%"></i>'; }).join('');
-  var blocks = (s.steps||[]).map(function(st){ return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+st[3]+'</div></div><div class="d tnum">'+st[2]+'</div></div>'; }).join('');
-  var state = s.done ? ['mint','Completed'] : isDone ? ['mint','Done'] : ymd(date)===today ? ['mint','Today'] : ['slate','Upcoming'];
+  var steps = expand(s.steps);
+  var prof = steps.map(function(st){ return '<i style="--zc:var(--z'+st[0]+');flex:'+Math.max(st[4]||1, 0.6)+';height:'+(ZH[st[0]]*100)+'%"></i>'; }).join('');
+  var blocks = steps.map(function(st){ return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+st[3]+'</div></div><div class="d tnum">'+st[2]+'</div></div>'; }).join('');
+  var state = isDone ? ['mint','Logged'] : ymd(date)===today ? ['mint','Today'] : ['slate','Upcoming'];
   box.innerHTML =
     '<div class="hd"><div><span class="lbl">'+x.day+' '+date.getDate()+' '+MON[date.getMonth()]+' · '+(s.z ? ZN[s.z] : '')+'</span><div class="disp">'+s.title+'</div>' +
       '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink">'+s.min+"'"+'</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
@@ -396,7 +405,7 @@ function detail(wi, q){
     '<div class="prof">'+prof+'</div>' +
     '<div class="blocks">'+blocks+'</div>' +
     (s.done ? '' : '<div class="mv"><span class="lbl">Move to</span>' + DAYS.map(function(dd){ return '<button type="button" class="pk'+(dd===x.day?" on":"")+'" data-d="'+dd+'">'+dd.slice(0,1)+dd.slice(1).toLowerCase()+'</button>'; }).join('') + '</div>') +
-    '<div class="ft">' + (s.done ? '<div class="on">'+icon('complete',18,'#2E8A75')+'Logged run</div>' : '<button type="button" id="'+id+'-tog" class="'+(isDone?'on':'')+'">'+icon('complete',18,isDone?'#2E8A75':'#2A2E2D')+(isDone?'Marked done':'Mark as done')+'</button>') + '<button type="button" id="'+id+'-close">'+icon('close',18,'#2A2E2D')+'Close</button></div>';
+    '<div class="ft">' + (s.done ? '<div class="on">'+icon('complete',18,'#2E8A75')+'Logged run</div>' : '<button type="button" id="'+id+'-tog" class="'+(isDone?'on':'')+'">'+icon('complete',18,isDone?'#2E8A75':'#2A2E2D')+(isDone?'Logged · tap to undo':'Log as done')+'</button>') + '<button type="button" id="'+id+'-close">'+icon('close',18,'#2A2E2D')+'Close</button></div>';
   box.querySelectorAll(".pk").forEach(function(b){ b.addEventListener("click", function(){ moves[wi] = moves[wi] || {}; moves[wi][x.si] = b.getAttribute("data-d"); save({move:wi+":"+x.si, day:moves[wi][x.si]}); render(); }); });
   var tog = box.querySelector("#"+id+"-tog"); if (tog) tog.addEventListener("click", function(){ ticks[id] = !isDone; save({tick:id}); render(); });
   box.querySelector("#"+id+"-close").addEventListener("click", function(){ sel = null; render(); });
