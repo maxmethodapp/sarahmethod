@@ -94,6 +94,7 @@ button{font:inherit;color:inherit}
 .cft{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:6px}
 .cell .ttl{font-family:var(--body);font-size:13.5px;font-weight:400;color:var(--ink);line-height:1.25;min-width:0;text-wrap:balance}
 .cell .ttl b{font-weight:700}
+.ttl .td,.disp .td{display:inline-block}
 .cell .sub{font-family:var(--mono);font-size:9px;color:var(--ink400);text-transform:uppercase;letter-spacing:.04em;margin-top:4px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .cell.rest .ttl,.cell.tbc .ttl{color:var(--ink400);font-weight:500}
 .cell .km{font-family:var(--mono);font-size:10px;color:var(--ink400);letter-spacing:.02em}
@@ -446,7 +447,7 @@ function stats(byDate, weeks){
   ].map(function(x){ return '<div class="card stat">'+icon(x[0],18,'#6E726F')+'<div class="v tnum">'+x[1]+'<small>'+x[2]+'</small></div><div class="lbl">'+x[3]+'</div></div>'; }).join('');
 }
 
-function tHtml(s){ return (s.kind ? '<b>'+s.kind+'</b> ' : '') + (s.title||''); }
+function tHtml(s){ return (s.kind ? '<b>'+s.kind+'</b> ' : '') + (s.title ? '<span class="td">'+s.title+'</span>' : ''); }
 function tText(s){ return (s.kind ? s.kind+' ' : '') + (s.title||''); }
 var root = document.getElementById("plan");
 var scrolledOnce = false, keepScroll = null;
