@@ -75,7 +75,7 @@ button{font:inherit;color:inherit}
 .cell.ghost{position:fixed;z-index:50;pointer-events:none;background:var(--bone);box-shadow:0 10px 30px rgba(21,25,26,.18);border:1px solid var(--ink100);transform:rotate(-1.5deg);opacity:.95}
 .mvhint{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--ink300);margin-left:6px}
 #panel:empty{display:none}
-#panel{margin-top:10px}
+#panel{margin:10px 0 8px}
 /* week grid */
 .wk{padding:6px}
 .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
@@ -92,7 +92,8 @@ button{font:inherit;color:inherit}
 .cell .bar{width:3px;height:28px;border-radius:2px;background:var(--ink100);flex:none}
 .cell .row{display:flex;gap:8px;align-items:flex-start;min-width:0}
 .cft{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:6px}
-.cell .ttl{font-family:var(--body);font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25;min-width:0;text-wrap:balance}
+.cell .ttl{font-family:var(--body);font-size:13.5px;font-weight:400;color:var(--ink);line-height:1.25;min-width:0;text-wrap:balance}
+.cell .ttl b{font-weight:700}
 .cell .sub{font-family:var(--mono);font-size:9px;color:var(--ink400);text-transform:uppercase;letter-spacing:.04em;margin-top:4px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .cell.rest .ttl,.cell.tbc .ttl{color:var(--ink400);font-weight:500}
 .cell .km{font-family:var(--mono);font-size:10px;color:var(--ink400);letter-spacing:.02em}
@@ -126,18 +127,20 @@ button{font:inherit;color:inherit}
 .det{margin-top:10px;overflow:hidden}
 .det .hd{padding:18px 18px 14px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
 .det .hd .lbl{color:var(--mint600)}
-.det .hd .disp{font-size:24px;margin-top:8px}
+.det .hd .disp{font-size:24px;margin-top:8px;font-weight:400}
+.det .hd .disp b{font-weight:700}
 .det .pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .det .obj{font-size:13.5px;line-height:1.55;color:var(--ink500);margin-top:10px;max-width:70ch}
 .det .ic{width:42px;height:42px;border-radius:999px;background:var(--ink50);display:flex;align-items:center;justify-content:center;flex:none}
 .prof{display:flex;align-items:flex-end;height:64px;gap:2px;padding:0 18px}
 .prof i{display:block;opacity:.85;border-radius:3px 3px 0 0;background:var(--zc)}
-.blocks{padding:12px 18px 6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.blocks{padding:12px 18px 6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
 .blk{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--ink100);border-radius:12px;background:var(--bone)}
 .blk .b{width:4px;height:36px;border-radius:2px;background:var(--zc);flex:none}
 .blk .t{flex:1;min-width:0}
-.blk .t .n{font-family:var(--body);font-weight:600;font-size:14px;color:var(--ink)}
-.blk .t .g{font-size:12px;color:var(--ink600);margin-top:2px}
+.blk .t .n{font-family:var(--body);font-weight:600;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.blk .t .n .pill{margin-left:0!important}
+.blk .t .g{font-size:12px;color:var(--ink600);margin-top:3px;line-height:1.4}
 .blk .d{font-family:var(--body);font-weight:600;font-size:15px;color:var(--ink);white-space:nowrap}
 .det .ft{display:flex;border-top:1px solid var(--ink100);margin-top:10px}
 .det .ft > *{flex:1;padding:13px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:var(--body);font-size:11px;font-weight:600;color:var(--ink600)}
@@ -276,44 +279,44 @@ button{font:inherit;color:inherit}
 // start: Monday (YYYY-MM-DD). z: zone colour. steps: [zone, name, km label, target, minutes]. km:[lo,hi]. min: planned minutes.
 var PLAN = [
   { start:"2026-10-12", focus:"Endurance · Parkrun", sessions:[
-    { day:"MON", z:2, type:"Logged", done:true, title:"Endurance 5.5 km", sub:"5.5 km @ 5:05/km · 27:54", km:[5.5,5.5], min:28,
+    { day:"MON", z:2, type:"Logged", done:true, kind:"Endurance", title:"5.5 km", sub:"5.5 km @ 5:05/km · 27:54", km:[5.5,5.5], min:28,
       steps:[[2,"Endurance","5.5 km","5:05/km",28]], note:"Top end of endurance. Fine." },
-    { day:"TUE", z:2, type:"Logged", done:true, title:"Long 12.8 km", sub:"12.8 km @ 5:34/km · 71'", km:[12.8,12.8], min:71,
+    { day:"TUE", z:2, type:"Logged", done:true, kind:"Long run", title:"12.8 km", sub:"12.8 km @ 5:34/km · 71'", km:[12.8,12.8], min:71,
       steps:[[2,"Long run","12.8 km","5:34/km",71]], note:"Right pace for a long one." },
     { day:"WED", rest:true },
-    { day:"THU", z:2, type:"Logged", done:true, title:"Endurance 4.7 km", sub:"4.7 km @ 4:57/km · 23:23", km:[4.7,4.7], min:23,
+    { day:"THU", z:2, type:"Logged", done:true, kind:"Endurance", title:"4.7 km", sub:"4.7 km @ 4:57/km · 23:23", km:[4.7,4.7], min:23,
       steps:[[2,"Endurance","4.7 km","4:57/km",23]], note:"Quicker through the run. Easier than this next time." },
-    { day:"FRI", z:1, type:"Shakeout", title:"Shakeout + strides", sub:"3.5 km Z1 + 3 × 50 m strides", km:[4.9,5.8], min:33,
+    { day:"FRI", z:1, type:"Shakeout", kind:"Shakeout", title:"3.5 km + strides", sub:"3.5 km Z1 + 3 × 50 m strides", km:[4.9,5.8], min:33,
       steps:[[1,"Easy","3.5 km","Z1 · 5:45+",20],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","easy",1]}],[1,"Easy","1.4 km","Z1",8]], note:"Pre-Parkrun. Keep it very easy." },
-    { day:"SAT", z:4, type:"Parkrun", title:"Parkrun 5 km", sub:"5 km · free effort", km:[5,5], min:25,
+    { day:"SAT", z:4, type:"Parkrun", kind:"Parkrun", title:"5 km", sub:"5 km · free effort", km:[5,5], min:25,
       steps:[[4,"Parkrun","5 km","run it how you feel",25]], note:"No target." },
     { day:"SUN", rest:true }
   ]},
   { start:"2026-10-19", focus:"Endurance · first tempo", sessions:[
-    { day:"MON", z:2, type:"Long", title:"Long run 11–12 km", sub:"10.9–12 km @ 4:56–5:50 · trail or road", km:[10.9,12.0], min:60,
+    { day:"MON", z:2, type:"Long", kind:"Long run", title:"11–12 km", sub:"10.9–12 km @ 4:56–5:50 · trail or road", km:[10.9,12.0], min:60,
       steps:[[2,"Long run","11.5 km","Z2 · 4:56–5:50",60]], note:"Trail or road. Trail will be slower per km, that's fine, go by feel." },
-    { day:"TUE", z:2, type:"Endurance", title:"Endurance 5.5–6 km", sub:"5.5–6 km @ 4:56–5:50", km:[5.5,6.0], min:30,
+    { day:"TUE", z:2, type:"Endurance", kind:"Endurance", title:"5.5–6 km", sub:"5.5–6 km @ 4:56–5:50", km:[5.5,6.0], min:30,
       steps:[[2,"Endurance","5.8 km","Z2 · 4:56–5:50",30]] },
-    { day:"WED", z:2, type:"Endurance", title:"Endurance 6.5–7 km + strides", sub:"6.5–7 km @ 4:56–5:50 + 3 × 50 m strides", km:[6.5,7.1], min:38,
+    { day:"WED", z:2, type:"Endurance", kind:"Endurance", title:"6.5–7 km + strides", sub:"6.5–7 km @ 4:56–5:50 + 3 × 50 m strides", km:[6.5,7.1], min:38,
       steps:[[2,"Endurance","6.7 km","Z2 · 4:56–5:50",35],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","easy",1]}]], note:"Strides fast and relaxed, not a sprint." },
     { day:"THU", rest:true },
     { day:"FRI", rest:true },
-    { day:"SAT", z:3, type:"Tempo", title:"3 × 1.7 km tempo", sub:"3 × 1.7 km @ 4:28–4:40 · 2' jog between", km:[8.8,9.6], min:45,
+    { day:"SAT", z:3, type:"Tempo", kind:"Tempo", title:"3 × 1.7 km", sub:"3 × 1.7 km @ 4:28–4:40 · 2' jog between", km:[8.8,9.6], min:45,
       steps:[[2,"Warm-up","1.9 km","Z2 · 4:56–5:50",10],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.4 km","easy",2],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.4 km","easy",2],[3,"Tempo","1.8 km","4:28–4:40",8],[2,"Cool-down","1.4 km","Z2",7]],
       note:"90–94% of threshold pace. RPE 4–5. Controlled, not a race. HR will drift up through the reps; hold pace, not HR." },
     { day:"SUN", rest:true }
   ]},
   { start:"2026-10-26", focus:"Threshold", sessions:[
-    { day:"MON", z:2, type:"Endurance", title:"Endurance 7.3–8 km + strides", sub:"7.3–8 km @ 4:56–5:50 + 3 × 50 m strides", km:[7.4,8.1], min:43,
+    { day:"MON", z:2, type:"Endurance", kind:"Endurance", title:"7.3–8 km + strides", sub:"7.3–8 km @ 4:56–5:50 + 3 × 50 m strides", km:[7.4,8.1], min:43,
       steps:[[2,"Endurance","7.7 km","Z2 · 4:56–5:50",40],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","easy",1]}]] },
     { day:"TUE", rest:true },
-    { day:"WED", z:4, type:"Threshold", title:"4 × 1.2 km threshold", sub:"4 × 1.2 km @ 4:12–4:25 · 2' jog between", km:[8.2,9.3], min:43,
+    { day:"WED", z:4, type:"Threshold", kind:"Threshold", title:"4 × 1.2 km", sub:"4 × 1.2 km @ 4:12–4:25 · 2' jog between", km:[8.2,9.3], min:43,
       steps:[[2,"Warm-up","1.8 km","Z2 · 4:56–5:50",10],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.4 km","easy",2],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.4 km","easy",2],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.4 km","easy",2],[4,"Threshold","1.2 km","4:12–4:25",5],[2,"Cool-down","1.3 km","Z2",7]],
       note:"95–100% of threshold pace. RPE 6–8. Even pace across all four. Ignore HR on the reps." },
-    { day:"THU", z:2, type:"Endurance", title:"Endurance 11–12 km", sub:"10.9–12 km @ 4:56–5:50", km:[10.9,12.0], min:60,
+    { day:"THU", z:2, type:"Endurance", kind:"Endurance", title:"11–12 km", sub:"10.9–12 km @ 4:56–5:50", km:[10.9,12.0], min:60,
       steps:[[2,"Endurance","11.5 km","Z2 · 4:56–5:50",60]], note:"Easy after yesterday. If legs are heavy, bottom of the band." },
     { day:"FRI", rest:true },
-    { day:"SAT", z:1, type:"Easy", title:"Easy 4.8–6.9 km", sub:"4.8–6.9 km @ 5:50–8:24 · 40'", km:[4.8,6.9], min:40,
+    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"4.8–6.9 km", sub:"4.8–6.9 km @ 5:50–8:24 · 40'", km:[4.8,6.9], min:40,
       steps:[[1,"Easy","5.9 km","Z1 · 5:50–8:24",40]], note:"Properly easy. Slower than feels natural." },
     { day:"SUN", rest:true }
   ]}
@@ -357,7 +360,7 @@ function deleteExtra(id){
 function paceOf(km, min){ if (!km || !min) return ""; var sec = Math.round(min*60/km); return Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0")+"/km"; }
 function extraSession(e){
   var km = Number(e.km)||0, min = Number(e.min)||0, z = Number(e.zone)||2, pace = paceOf(km, min);
-  return { extra:true, xid:e.id, z:z, type:"Extra", done:true, title:"Extra run "+km.toFixed(1)+" km", sub:(pace ? pace+" · " : "")+(min ? min+"'" : ""), km:[km,km], min:min, steps:[[z,"Run",km.toFixed(1)+" km",(pace||"")+(pace&&min?" · ":"")+(min?min+"'":""),min||1]], note:e.note||"" };
+  return { extra:true, xid:e.id, z:z, type:"Extra", done:true, kind:"Extra run", title:km.toFixed(1)+" km", sub:(pace ? pace+" · " : "")+(min ? min+"'" : ""), km:[km,km], min:min, steps:[[z,"Run",km.toFixed(1)+" km",(pace||"")+(pace&&min?" · ":"")+(min?min+"'":""),min||1]], note:e.note||"" };
 }
 function extrasOn(dateStr){ return extras.filter(function(e){ return e.day === dateStr; }).map(extraSession); }
 function push(rows){
@@ -443,6 +446,8 @@ function stats(byDate, weeks){
   ].map(function(x){ return '<div class="card stat">'+icon(x[0],18,'#6E726F')+'<div class="v tnum">'+x[1]+'<small>'+x[2]+'</small></div><div class="lbl">'+x[3]+'</div></div>'; }).join('');
 }
 
+function tHtml(s){ return (s.kind ? '<b>'+s.kind+'</b> ' : '') + (s.title||''); }
+function tText(s){ return (s.kind ? s.kind+' ' : '') + (s.title||''); }
 var root = document.getElementById("plan");
 var scrolledOnce = false, keepScroll = null;
 function render(){
@@ -475,8 +480,8 @@ function render(){
           var s = x.s, id = x.id, isDone = x.isDone, canDrag = !isDone && !x.extra;
           var c = document.createElement("button"); c.type = "button";
           c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
-          c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+s.title+'</div><div class="sub">'+(s.sub||s.type||'')+'</div></div></div>' +
-            '<div class="cft">' + (s.min ? '<span class="km tnum">'+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+s.title+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
+          c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+tHtml(s)+'</div><div class="sub">'+(s.sub||s.type||'')+'</div></div></div>' +
+            '<div class="cft">' + (s.min ? '<span class="km tnum">'+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
           var k2 = c.querySelector(".chk");
           k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
           k2.addEventListener("change", function(){ ticks[id] = k2.checked; save({tick:id}); render(); });
@@ -489,12 +494,12 @@ function render(){
       })(di);
     }
     body.appendChild(grid);
+    if (selected && !selected.placedPanel && ymd(selected.date) >= ymd(w.start) && ymd(selected.date) <= ymd(w.end)) {
+      var panel = document.createElement("div"); panel.id = "panel"; panel.appendChild(selected.add ? addForm(selected) : detail(selected)); body.appendChild(panel); selected.placedPanel = true;
+    }
   });
   cal.appendChild(body);
   root.innerHTML = ""; root.appendChild(cal);
-  var panel = document.createElement("div"); panel.id = "panel";
-  if (selected) panel.appendChild(selected.add ? addForm(selected) : detail(selected));
-  root.appendChild(panel);
   if (keepScroll != null) { cal.scrollTop = keepScroll; keepScroll = null; scrolledOnce = true; }
   else if (!scrolledOnce && curRow) { scrolledOnce = true; cal.scrollTop = Math.max(0, curRow.offsetTop - 44); }
   stats(byDate, weeks); drawLoad(byDate, weeks);
@@ -582,7 +587,7 @@ function detail(q){
   var state = isDone ? ['mint','Logged'] : ymd(date)===today ? ['mint','Today'] : ['slate','Upcoming'];
   var wkStart = addDays(date, -((date.getDay()+6)%7));
   box.innerHTML =
-    '<div class="hd"><div><span class="lbl">'+x.dow+' '+date.getDate()+' '+MON[date.getMonth()]+' · '+(x.extra ? 'Extra run' : s.z ? ZN[s.z] : '')+'</span><div class="disp">'+s.title+'</div>' +
+    '<div class="hd"><div><span class="lbl">'+x.dow+' '+date.getDate()+' '+MON[date.getMonth()]+' · '+(x.extra ? 'Extra run' : s.z ? ZN[s.z] : '')+'</span><div class="disp">'+tHtml(s)+'</div>' +
       '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink">'+s.min+"'"+'</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
       (s.note ? '<div class="obj">'+s.note+'</div>' : '') + '</div>' +
       '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
