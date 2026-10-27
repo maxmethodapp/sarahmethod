@@ -574,8 +574,8 @@ function detail(q){
   var prof = steps.map(function(st){ return '<i style="--zc:var(--z'+st[0]+');flex:'+Math.max(st[4]||1, 0.6)+';height:'+(ZH[st[0]]*100)+'%"></i>'; }).join('');
   var blocks = grouped(steps).map(function(g){
     var st = g.work, kmv = parseFloat(st[2]), isKm = /km$/.test(st[2]) && !isNaN(kmv);
-    var name = g.reps > 1 ? g.reps + ' × ' + st[2] : st[1];
-    var det = (g.reps > 1 ? st[1] + ' · ' : '') + st[3] + (g.rec ? ' · ' + g.rec[2] + ' ' + (g.rec[1]||'').toLowerCase() + ' between' : '');
+    var name = g.reps > 1 ? g.reps + ' × ' + st[2] + ' ' + st[1] : st[1];
+    var det = g.reps > 1 ? st[2] + ' @ ' + st[3] + (g.rec ? ' · ' + g.rec[2] + ' ' + (g.rec[1]||'').toLowerCase() : '') : st[3];
     var right = g.reps > 1 && isKm ? (Math.round(kmv*g.reps*10)/10).toFixed(1) + ' km' : (g.reps > 1 ? '' : st[2]);
     return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+name+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+det+'</div></div><div class="d tnum">'+right+'</div></div>';
   }).join('');
