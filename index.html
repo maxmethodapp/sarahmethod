@@ -355,7 +355,7 @@ function render(){
           var s = x.s, id = x.id, isDone = x.isDone, canDrag = !isDone && !x.extra;
           var c = document.createElement("button"); c.type = "button";
           c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
-          c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+s.title+'</div><div class="sub">'+(s.type||'')+(s.sub?' · '+s.sub:'')+'</div></div></div>' +
+          c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+s.title+'</div><div class="sub">'+(s.sub||s.type||'')+'</div></div></div>' +
             '<div class="cft">' + (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>') + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+s.title+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
           var k2 = c.querySelector(".chk");
           k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
@@ -432,12 +432,31 @@ function expand(steps){
   });
   return out;
 }
+function sameStep(a, b){ return a && b && a[0]===b[0] && a[1]===b[1] && a[2]===b[2] && a[3]===b[3]; }
+function grouped(steps){
+  var out = [], i = 0, n = steps.length;
+  while (i < n) {
+    var w = steps[i], reps = 1, rec = null;
+    while (i + 2*reps < n && sameStep(steps[i + 2*reps], w)) {
+      var r = steps[i + 2*reps - 1];
+      if (rec === null) rec = r; else if (!sameStep(r, rec)) break;
+      reps++;
+    }
+    if (reps > 1) { out.push({ reps:reps, work:w, rec:rec }); i += 2*reps - 1; }
+    else { out.push({ reps:1, work:w }); i++; }
+  }
+  return out;
+}
 function detail(q){
   var s = q.x.s, x = q.x, id = q.id, date = q.date, isDone = q.isDone, wi = x.wi;
   var box = document.createElement("div"); box.className = "card det";
   var steps = expand(s.steps);
   var prof = steps.map(function(st){ return '<i style="--zc:var(--z'+st[0]+');flex:'+Math.max(st[4]||1, 0.6)+';height:'+(ZH[st[0]]*100)+'%"></i>'; }).join('');
-  var blocks = steps.map(function(st){ return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+st[3]+'</div></div><div class="d tnum">'+st[2]+'</div></div>'; }).join('');
+  var blocks = grouped(steps).map(function(g){
+    var st = g.work, name = (g.reps > 1 ? g.reps + ' × ' : '') + st[1];
+    var det = st[3] + (g.rec ? ' · ' + g.rec[2] + ' ' + (g.rec[1]||'').toLowerCase() + ' between' : '');
+    return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+name+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+det+'</div></div><div class="d tnum">'+st[2]+'</div></div>';
+  }).join('');
   var state = isDone ? ['mint','Logged'] : ymd(date)===today ? ['mint','Today'] : ['slate','Upcoming'];
   var wkStart = addDays(date, -((date.getDay()+6)%7));
   box.innerHTML =
