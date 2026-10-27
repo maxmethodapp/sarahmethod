@@ -35,12 +35,12 @@ button{font:inherit;color:inherit}
 .pill.z{background:color-mix(in srgb,var(--zc) 14%,transparent);color:var(--zc)}
 
 /* top */
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:34px}
 .logo{height:22px;width:auto;display:block}
-.head{display:grid;grid-template-columns:1fr auto;gap:18px 32px;align-items:end}
-.head h1{font-family:var(--display);font-weight:700;font-size:34px;letter-spacing:-.01em;line-height:1.04;margin:8px 0 0;text-wrap:balance}
+.head{display:grid;grid-template-columns:1fr auto;gap:18px 32px;align-items:center;margin-bottom:22px}
+.head h1{font-family:var(--display);font-weight:700;font-size:40px;letter-spacing:-.01em;line-height:1;margin:10px 0 0;text-wrap:balance}
 .head p{color:var(--ink500);margin:10px 0 0;font-size:14px;max-width:52ch}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:10px;margin-top:0}
 .stat{padding:13px 14px}
 .stat .v{font-family:var(--display);font-weight:700;font-size:22px;line-height:1;margin-top:10px;white-space:nowrap}
 .stat .v small{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--ink400);margin-left:4px;letter-spacing:.04em}
@@ -190,7 +190,8 @@ button{font:inherit;color:inherit}
 .foot .lbl{font-size:9.5px;color:var(--ink300)}
 
 @media (max-width:760px){
-  .head{grid-template-columns:1fr}
+  .head{grid-template-columns:1fr;gap:14px;margin-bottom:16px}
+  .head h1{font-size:32px}
   .sec{flex-wrap:wrap;gap:4px 12px}
   .sec .lbl{white-space:normal;line-height:1.5}
   .top .lbl{font-size:9px}
@@ -356,7 +357,7 @@ function render(){
           var c = document.createElement("button"); c.type = "button";
           c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
           c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+s.title+'</div><div class="sub">'+(s.sub||s.type||'')+'</div></div></div>' +
-            '<div class="cft">' + (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>') + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+s.title+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
+            '<div class="cft">' + (s.min ? '<span class="km tnum">'+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+s.title+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
           var k2 = c.querySelector(".chk");
           k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
           k2.addEventListener("change", function(){ ticks[id] = k2.checked; save({tick:id}); render(); });
