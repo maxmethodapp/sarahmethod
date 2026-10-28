@@ -488,8 +488,6 @@ function detail(q){
   });
   var legend = [], seen = {}; steps.forEach(function(st){ var k = st[0]+'|'+st[1]; if (!seen[k]) { seen[k] = 1; legend.push({ z:st[0], name:st[1], target:st[3] }); } });
   var legendHtml = legend.map(function(l){ return '<span><i style="background:var(--z'+l.z+')"></i>'+l.name+(l.target ? ' · '+l.target : '')+'</span>'; }).join('');
-  var how = grouped(steps).map(function(g){ var st = g.work; return g.reps > 1 ? g.reps+' × ('+st[2]+' '+st[1].toLowerCase()+' at '+st[3]+(g.rec ? ' + '+g.rec[2]+' '+g.rec[1].toLowerCase() : '')+')' : st[2]+' '+st[1].toLowerCase()+(st[3] ? ' ('+st[3]+')' : ''); });
-  var howHtml = how.length ? '<div class="how"><span class="lbl">How to run it</span><ol>'+how.map(function(h){ return '<li>'+h+'</li>'; }).join('')+'</ol></div>' : '';
   var blocks = grouped(steps).map(function(g){
     var st = g.work, kmv = parseFloat(st[2]), isKm = /km$/.test(st[2]) && !isNaN(kmv);
     if (g.reps > 1) {
