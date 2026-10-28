@@ -95,7 +95,8 @@ button{font:inherit;color:inherit}
 .cell .ttl{font-family:var(--body);font-size:13.5px;font-weight:400;color:var(--ink);line-height:1.25;min-width:0;text-wrap:balance}
 .cell .ttl b{font-weight:700}
 .ttl .td,.disp .td{display:inline-block}
-.cell .sub{font-family:var(--mono);font-size:9px;color:var(--ink400);text-transform:uppercase;letter-spacing:.04em;margin-top:4px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cell .sub{font-family:var(--mono);font-size:10px;color:var(--ink400);letter-spacing:.01em;margin-top:4px;line-height:1.5}
+.cell .sub span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cell.rest .ttl,.cell.tbc .ttl{color:var(--ink400);font-weight:500}
 .cell .km{font-family:var(--mono);font-size:10px;color:var(--ink400);letter-spacing:.02em}
 .cell.done .ttl{color:var(--ink400)}
@@ -238,7 +239,6 @@ button{font:inherit;color:inherit}
   .cell .row{flex:1;align-items:center}
   .cell .km{margin:0;flex:none}
   .cft{margin:0;padding:0;gap:10px;flex:none}
-  .cell .sub{-webkit-line-clamp:2}
   .addrun{margin:0}
   .afrow{grid-template-columns:1fr 1fr}
   .cell .bar{height:30px}
@@ -387,7 +387,7 @@ function render(){
           var s = x.s, id = x.id, isDone = x.isDone, canDrag = !x.extra;
           var c = document.createElement("button"); c.type = "button";
           c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
-          c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+tHtml(s)+'</div><div class="sub">'+(s.sub||s.type||'')+'</div></div></div>' +
+          c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+tHtml(s)+'</div><div class="sub">'+String(s.sub||s.type||'').split('|').map(function(l){ return '<span>'+l+'</span>'; }).join('')+'</div></div></div>' +
             '<div class="cft">' + (s.min ? '<span class="km tnum">≈ '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
           var k2 = c.querySelector(".chk");
           k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
