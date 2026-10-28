@@ -461,6 +461,7 @@ function expand(steps){
   });
   return out;
 }
+function po(tg){ return (tg||'').replace(/^Z\d\s*·\s*/,''); }
 function sameStep(a, b){ return a && b && a[0]===b[0] && a[1]===b[1] && a[2]===b[2] && a[3]===b[3]; }
 function grouped(steps){
   var out = [], i = 0, n = steps.length;
@@ -487,17 +488,17 @@ function detail(q){
     labels += '<span style="flex:'+wOf(st)+'"><b>'+st[2]+'</b>'+st[1]+'</span>';
   });
   var legend = [], seen = {}; steps.forEach(function(st){ var k = st[0]+'|'+st[1]; if (!seen[k]) { seen[k] = 1; legend.push({ z:st[0], name:st[1], target:st[3] }); } });
-  var legendHtml = legend.map(function(l){ return '<span><i style="background:var(--z'+l.z+')"></i>'+l.name+(l.target ? ' · '+l.target : '')+'</span>'; }).join('');
+  var legendHtml = legend.map(function(l){ return '<span><i style="background:var(--z'+l.z+')"></i>'+l.name+(po(l.target) ? ' · '+po(l.target) : '')+'</span>'; }).join('');
   var blocks = grouped(steps).map(function(g){
     var st = g.work, kmv = parseFloat(st[2]), isKm = /km$/.test(st[2]) && !isNaN(kmv);
     if (g.reps > 1) {
       var total = isKm ? (Math.round(kmv*g.reps*10)/10).toFixed(1) + ' km' : '';
       return '<div class="blk rep" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="rp"><span class="rx">'+g.reps+' ×</span><span class="rset">' +
-        '<span class="rpart" style="--zc:var(--z'+st[0]+')"><b>'+st[2]+'</b> '+st[1]+(st[3] ? ' <i>@ '+st[3]+'</i>' : '')+'</span>' +
-        (g.rec ? '<span class="rsep">+</span><span class="rpart" style="--zc:var(--z'+g.rec[0]+')"><b>'+g.rec[2]+'</b> '+g.rec[1].toLowerCase()+(g.rec[3] && g.rec[3] !== 'easy' ? ' <i>'+g.rec[3]+'</i>' : '')+'</span>' : '') +
+        '<span class="rpart" style="--zc:var(--z'+st[0]+')"><b>'+st[2]+'</b> '+st[1]+(po(st[3]) ? ' <i>@ '+po(st[3])+'</i>' : '')+'</span>' +
+        (g.rec ? '<span class="rsep">+</span><span class="rpart" style="--zc:var(--z'+g.rec[0]+')"><b>'+g.rec[2]+'</b> '+g.rec[1].toLowerCase()+(po(g.rec[3]) && g.rec[3] !== 'easy' ? ' <i>@ '+po(g.rec[3])+'</i>' : '')+'</span>' : '') +
         '</span></div></div><div class="d tnum">'+total+'</div></div>';
     }
-    return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+st[3]+'</div></div><div class="d tnum">'+st[2]+'</div></div>';
+    return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+po(st[3])+'</div></div><div class="d tnum">'+st[2]+'</div></div>';
   }).join('');
   var state = isDone ? ['mint','Logged'] : ymd(date)===today ? ['mint','Today'] : ['slate','Upcoming'];
   var wkStart = addDays(date, -((date.getDay()+6)%7));
