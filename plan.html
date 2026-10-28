@@ -302,12 +302,12 @@ button{font:inherit;color:inherit}
 // start: Monday (YYYY-MM-DD). z: zone colour. steps: [zone, name, km label, target, minutes]. km:[lo,hi]. min: planned minutes.
 var PLAN = [
   { start:"2026-10-12", focus:"Endurance · Parkrun", sessions:[
-    { day:"MON", z:2, type:"Logged", done:true, kind:"Endurance", title:"5.5 km", sub:"5.5 km @ 5:05/km · 27:54", km:[5.5,5.5], min:28,
+    { day:"MON", z:2, type:"Logged", done:true, kind:"Endurance", title:"5.5 km", sub:"5.5 km @ 5:05/km", km:[5.5,5.5], min:28,
       steps:[[2,"Endurance","5.5 km","5:05/km",28]], note:"Top end of endurance. Fine." },
-    { day:"TUE", z:2, type:"Logged", done:true, kind:"Long run", title:"12.8 km", sub:"12.8 km @ 5:34/km · 71'", km:[12.8,12.8], min:71,
+    { day:"TUE", z:2, type:"Logged", done:true, kind:"Long run", title:"12.8 km", sub:"12.8 km @ 5:34/km", km:[12.8,12.8], min:71,
       steps:[[2,"Long run","12.8 km","5:34/km",71]], note:"Right pace for a long one." },
     { day:"WED", rest:true },
-    { day:"THU", z:2, type:"Logged", done:true, kind:"Endurance", title:"4.7 km", sub:"4.7 km @ 4:57/km · 23:23", km:[4.7,4.7], min:23,
+    { day:"THU", z:2, type:"Logged", done:true, kind:"Endurance", title:"4.7 km", sub:"4.7 km @ 4:57/km", km:[4.7,4.7], min:23,
       steps:[[2,"Endurance","4.7 km","4:57/km",23]], note:"Quicker through the run. Easier than this next time." },
     { day:"FRI", z:1, type:"Shakeout", kind:"Shakeout", title:"3.5 km + strides", sub:"3.5 km Z1 + 3 × 50 m strides", km:[4.9,5.8], min:33,
       steps:[[1,"Easy","3.5 km","Z1 · 5:50–7:01",20],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[2,"Jog","200 m","Z2 · 4:56–5:50",1]}],[1,"Easy","1.4 km","Z1 · 5:50–7:01",8]], note:"Pre-Parkrun. Keep it very easy." },
@@ -339,7 +339,7 @@ var PLAN = [
     { day:"THU", z:2, type:"Endurance", kind:"Endurance", title:"11–12 km", sub:"10.9–12 km @ 4:56–5:50", km:[10.9,12.0], min:60,
       steps:[[2,"Endurance","11.5 km","Z2 · 4:56–5:50",60]], note:"Easy after yesterday. If legs are heavy, bottom of the band." },
     { day:"FRI", rest:true },
-    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"5.7–6.9 km", sub:"5.7–6.9 km @ 5:50–7:01 · 40'", km:[5.7,6.9], min:40,
+    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"5.7–6.9 km", sub:"5.7–6.9 km @ 5:50–7:01", km:[5.7,6.9], min:40,
       steps:[[1,"Easy","6.3 km","Z1 · 5:50–7:01",40]], note:"Properly easy. Slower than feels natural." },
     { day:"SUN", rest:true }
   ]}
@@ -504,7 +504,7 @@ function render(){
           var c = document.createElement("button"); c.type = "button";
           c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
           c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+tHtml(s)+'</div><div class="sub">'+(s.sub||s.type||'')+'</div></div></div>' +
-            '<div class="cft">' + (s.min ? '<span class="km tnum">'+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
+            '<div class="cft">' + (s.min ? '<span class="km tnum">≈ '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
           var k2 = c.querySelector(".chk");
           k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
           k2.addEventListener("change", function(){ ticks[id] = k2.checked; save({tick:id}); render(); });
@@ -622,7 +622,7 @@ function detail(q){
   var wkStart = addDays(date, -((date.getDay()+6)%7));
   box.innerHTML =
     '<div class="hd"><div><span class="lbl">'+x.dow+' '+date.getDate()+' '+MON[date.getMonth()]+' · '+(x.extra ? 'Extra run' : s.z ? ZN[s.z] : '')+'</span><div class="disp">'+tHtml(s)+'</div>' +
-      '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink">≈ '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
+      '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink" title="Estimated session time">Est. '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
       (s.note ? '<div class="obj">'+s.note+'</div>' : '') + '</div>' +
       '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
     '<div class="profwrap"><div class="prof">'+prof+'</div><div class="plab">'+labels+'</div><div class="pleg">'+legendHtml+'</div></div>' +
