@@ -134,17 +134,19 @@ button{font:inherit;color:inherit}
 .det .obj{font-size:13.5px;line-height:1.55;color:var(--ink500);margin-top:10px;max-width:70ch}
 .det .ic{width:42px;height:42px;border-radius:999px;background:var(--ink50);display:flex;align-items:center;justify-content:center;flex:none}
 .profwrap{padding:0 18px}
-.brk{display:flex;gap:6px;height:18px;align-items:flex-end;margin-bottom:4px}
-.brk span{min-width:0}
-.brk .br{border:1.5px solid var(--ink300);border-bottom:0;border-radius:6px 6px 0 0;height:10px;position:relative}
-.brk .br b{position:absolute;left:50%;top:-14px;transform:translateX(-50%);background:var(--bone);padding:0 6px;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ink);letter-spacing:.04em;white-space:nowrap}
-.prof{display:flex;align-items:flex-end;height:64px;gap:6px}
-.prof .pg{display:flex;align-items:flex-end;gap:2px;height:100%;min-width:0}
-.prof i{display:block;opacity:.9;border-radius:3px 3px 0 0;background:var(--zc);min-width:3px}
-.plab{display:flex;gap:6px;margin-top:6px}
-.plab span{min-width:0;font-family:var(--mono);font-size:9px;letter-spacing:.02em;color:var(--ink400);line-height:1.35;overflow:hidden}
-.plab span b{color:var(--ink);font-weight:600;display:block;font-size:10px}
-@media (max-width:760px){.plab span{font-size:8px}.plab span b{font-size:9px}}
+.prof{display:flex;align-items:flex-end;height:64px;gap:3px}
+.prof i{display:block;opacity:.9;border-radius:3px 3px 0 0;background:var(--zc);min-width:4px}
+.plab{display:flex;gap:3px;margin-top:6px}
+.plab span{min-width:0;font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;color:var(--ink400);line-height:1.3;overflow:hidden;text-transform:lowercase;text-align:center}
+.plab span b{color:var(--ink);font-weight:600;display:block;font-size:10px;text-transform:none;white-space:nowrap}
+.pleg{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;padding-top:10px;border-top:1px solid var(--ink100)}
+.pleg span{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink600)}
+.pleg i{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}
+.how{padding:14px 18px 4px}
+.how .lbl{font-size:9px}
+.how ol{margin:6px 0 0;padding-left:18px;font-size:13.5px;line-height:1.55;color:var(--ink)}
+.how li::marker{font-family:var(--mono);font-size:11px;color:var(--ink400)}
+@media (max-width:760px){.plab span{font-size:7.5px}.plab span b{font-size:9px}}
 .blocks{padding:12px 18px 6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
 .blk{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--ink100);border-radius:12px;background:var(--bone)}
 .blk .b{width:4px;height:36px;border-radius:2px;background:var(--zc);flex:none}
@@ -468,21 +470,16 @@ function detail(q){
   var s = q.x.s, x = q.x, id = q.id, date = q.date, isDone = q.isDone, wi = x.wi;
   var box = document.createElement("div"); box.className = "card det";
   var steps = expand(s.steps);
-  var groups = grouped(steps), prof = '', labels = '', brackets = '';
-  var wOf = function(st){ return Math.max(st[4]||1, 0.6); };
-  groups.forEach(function(g){
-    var st = g.work, gw = 0, segs = '';
-    if (g.reps > 1) {
-      for (var i = 0; i < g.reps; i++) { segs += '<i style="--zc:var(--z'+st[0]+');flex:'+wOf(st)+';height:'+(ZH[st[0]]*100)+'%"></i>'; gw += wOf(st); if (g.rec && i < g.reps-1) { segs += '<i style="--zc:var(--z'+g.rec[0]+');flex:'+wOf(g.rec)+';height:'+(ZH[g.rec[0]]*100)+'%"></i>'; gw += wOf(g.rec); } }
-      brackets += '<span style="flex:'+gw+'" class="br"><b>'+g.reps+' ×</b></span>';
-      labels += '<span style="flex:'+gw+'"><b>'+st[2]+'</b> '+st[1].toLowerCase()+(g.rec ? ' · '+g.rec[2]+' '+g.rec[1].toLowerCase() : '')+'</span>';
-    } else {
-      segs = '<i style="--zc:var(--z'+st[0]+');flex:'+wOf(st)+';height:'+(ZH[st[0]]*100)+'%"></i>'; gw = wOf(st);
-      brackets += '<span style="flex:'+gw+'"></span>';
-      labels += '<span style="flex:'+gw+'"><b>'+st[2]+'</b> '+st[1].toLowerCase()+'</span>';
-    }
-    prof += '<span class="pg" style="flex:'+gw+'">'+segs+'</span>';
+  var prof = '', labels = '';
+  var wOf = function(st){ return Math.max(st[4]||1, 0.8); };
+  steps.forEach(function(st){
+    prof += '<i style="--zc:var(--z'+st[0]+');flex:'+wOf(st)+';height:'+(ZH[st[0]]*100)+'%" title="'+st[2]+' '+st[1]+'"></i>';
+    labels += '<span style="flex:'+wOf(st)+'"><b>'+st[2]+'</b>'+st[1]+'</span>';
   });
+  var legend = [], seen = {}; steps.forEach(function(st){ var k = st[0]+'|'+st[1]; if (!seen[k]) { seen[k] = 1; legend.push({ z:st[0], name:st[1], target:st[3] }); } });
+  var legendHtml = legend.map(function(l){ return '<span><i style="background:var(--z'+l.z+')"></i>'+l.name+(l.target ? ' · '+l.target : '')+'</span>'; }).join('');
+  var how = grouped(steps).map(function(g){ var st = g.work; return g.reps > 1 ? g.reps+' × '+st[2]+' '+st[1].toLowerCase()+' at '+st[3]+(g.rec ? ' with '+g.rec[2]+' '+g.rec[1].toLowerCase()+' between' : '') : st[2]+' '+st[1].toLowerCase()+(st[3] ? ' ('+st[3]+')' : ''); });
+  var howHtml = how.length ? '<div class="how"><span class="lbl">How to run it</span><ol>'+how.map(function(h){ return '<li>'+h+'</li>'; }).join('')+'</ol></div>' : '';
   var blocks = grouped(steps).map(function(g){
     var st = g.work, kmv = parseFloat(st[2]), isKm = /km$/.test(st[2]) && !isNaN(kmv);
     var name = g.reps > 1 ? g.reps + ' × ' + st[2] + ' ' + st[1] : st[1];
@@ -494,10 +491,10 @@ function detail(q){
   var wkStart = addDays(date, -((date.getDay()+6)%7));
   box.innerHTML =
     '<div class="hd"><div><span class="lbl">'+x.dow+' '+date.getDate()+' '+MON[date.getMonth()]+' · '+(x.extra ? 'Extra run' : s.z ? ZN[s.z] : '')+'</span><div class="disp">'+tHtml(s)+'</div>' +
-      '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink">'+s.min+"'"+'</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
+      '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink">≈ '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
       (s.note ? '<div class="obj">'+s.note+'</div>' : '') + '</div>' +
       '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
-    '<div class="profwrap"><div class="brk">'+brackets+'</div><div class="prof">'+prof+'</div><div class="plab">'+labels+'</div></div>' +
+    '<div class="profwrap"><div class="prof">'+prof+'</div><div class="plab">'+labels+'</div><div class="pleg">'+legendHtml+'</div></div>' + howHtml +
     '<div class="blocks">'+blocks+'</div>' +
     (x.extra ? '' : '<div class="mv"><span class="lbl">Move to</span>' + DAYS.map(function(dd, i){ var ds = ymd(addDays(wkStart, i)); return '<button type="button" class="pk'+(dd===x.dow?" on":"")+'" data-d="'+ds+'">'+dd.slice(0,1)+dd.slice(1).toLowerCase()+'</button>'; }).join('') + '<span class="mvhint">or drag it on the calendar</span></div>') +
     '<div class="ft">' + (x.extra ? '<button type="button" id="del" class="danger">'+icon('close',18,'#9E4631')+'Delete run</button>' : s.done ? '<div class="on">'+icon('complete',18,'#2E8A75')+'Logged run</div>' : '<button type="button" id="tog" class="'+(isDone?'on':'')+'">'+icon('complete',18,isDone?'#2E8A75':'#2A2E2D')+(isDone?'Logged · tap to undo':'Log as done')+'</button>') + '<button type="button" id="closep">'+icon('close',18,'#2A2E2D')+'Close</button></div>';
