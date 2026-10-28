@@ -133,8 +133,8 @@ button{font:inherit;color:inherit}
 .det .pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .det .obj{font-size:13.5px;line-height:1.55;color:var(--ink500);margin-top:10px;max-width:70ch}
 .det .ic{width:42px;height:42px;border-radius:999px;background:var(--ink50);display:flex;align-items:center;justify-content:center;flex:none}
-.profwrap{padding:0 18px}
-.prof{display:flex;align-items:flex-end;height:64px;gap:3px}
+.profwrap{padding:0 18px 4px}
+.prof{display:flex;align-items:flex-end;height:56px;gap:3px}
 .prof i{display:block;opacity:.9;border-radius:3px 3px 0 0;background:var(--zc);min-width:4px}
 .plab{display:flex;gap:3px;margin-top:6px}
 .plab span{min-width:0;font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;color:var(--ink400);line-height:1.3;overflow:hidden;text-transform:lowercase;text-align:center}
@@ -159,12 +159,12 @@ button{font:inherit;color:inherit}
 .rp{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .rx{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;white-space:nowrap}
 .rset{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 10px;border:1.5px solid var(--ink200);border-radius:10px;background:var(--paper)}
-.rpart{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink600);white-space:nowrap}
-.rpart::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--zc);flex:none}
-.rpart b{color:var(--ink);font-weight:700}
-.rpart i{font-style:normal;color:var(--ink500)}
+.rpart{display:grid;grid-template-columns:10px auto;grid-template-rows:auto auto;column-gap:8px;align-items:center;color:var(--ink600);white-space:nowrap}
+.rpart::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--zc);grid-row:1/3;align-self:center}
+.rpart b{color:var(--ink);font-weight:700;font-size:14px;line-height:1.2}
+.rpart small{font-size:11.5px;color:var(--ink500);line-height:1.3}
 .rsep{font-family:var(--mono);color:var(--ink300);font-size:12px}
-@media (max-width:760px){.rset{padding:6px 8px;gap:6px}.rpart{font-size:12.5px;white-space:normal}.rx{font-size:18px}}
+@media (max-width:760px){.rp{align-items:flex-start}.rset{flex-direction:column;align-items:stretch;gap:8px;padding:8px 10px;flex:1}.rsep{display:none}.rpart{white-space:normal}.rx{font-size:18px;padding-top:6px}}
 .det .ft{display:flex;border-top:1px solid var(--ink100);margin-top:10px}
 .det .ft > *{flex:1;padding:13px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:var(--body);font-size:11px;font-weight:600;color:var(--ink600)}
 .det .ft > * + *{border-left:1px solid var(--ink100)}
@@ -204,12 +204,13 @@ button{font:inherit;color:inherit}
 .zr:first-of-type{border-top:0}
 .zr .b{width:4px;align-self:stretch;min-height:34px;border-radius:2px;background:var(--zc);flex:none}
 .zr .t{flex:1;min-width:0}
-.zr .t .n{font-weight:700;font-size:13.5px}
+.zr .t .n{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.zr .rpe{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink500);background:var(--ink100);border-radius:999px;padding:3px 7px}
 .zr .t .d{font-size:11.5px;line-height:1.45;color:var(--ink400);margin-top:2px}
-.zr .v{text-align:right;flex:none;min-width:96px}
+.zr .v{text-align:right;flex:none;min-width:110px}
 .zr .v.narrow{min-width:40px}
-@media (max-width:760px){.zr{flex-wrap:wrap}.zr .t{flex-basis:100%;order:-1;margin-left:16px}.zr .b{position:absolute;left:16px;top:11px;bottom:11px;min-height:0}.zr{position:relative;padding-left:32px}.zr .v{min-width:0;flex:1;text-align:left}}
-.zr .v .p{font-weight:700;font-size:15px;white-space:nowrap}
+@media (max-width:760px){.zr{display:grid;grid-template-columns:4px 1fr;gap:4px 12px;padding:12px 16px}.zr .b{grid-row:1/3;align-self:stretch;min-height:0}.zr .t{min-width:0}.zr .v{grid-column:2;text-align:left;min-width:0;display:flex;align-items:baseline;gap:8px}.zr .v .s{margin:0}.zr .v .p{font-size:16px}}
+.zr .v .p{font-family:var(--display);font-weight:700;font-size:17px;white-space:nowrap;letter-spacing:-.01em}
 .zr .v .s{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;color:var(--ink400);margin-top:2px}
 .znote{padding:11px 16px;border-top:1px solid var(--ink100);font-size:11.5px;color:var(--ink400);line-height:1.5}
 .foot{margin-top:32px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -494,8 +495,8 @@ function detail(q){
     if (g.reps > 1) {
       var total = isKm ? (Math.round(kmv*g.reps*10)/10).toFixed(1) + ' km' : '';
       return '<div class="blk rep" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="rp"><span class="rx">'+g.reps+' ×</span><span class="rset">' +
-        '<span class="rpart" style="--zc:var(--z'+st[0]+')"><b>'+st[2]+'</b> '+st[1]+(po(st[3]) ? ' <i>@ '+po(st[3])+'</i>' : '')+'</span>' +
-        (g.rec ? '<span class="rsep">+</span><span class="rpart" style="--zc:var(--z'+g.rec[0]+')"><b>'+g.rec[2]+'</b> '+g.rec[1].toLowerCase()+(po(g.rec[3]) && g.rec[3] !== 'easy' ? ' <i>@ '+po(g.rec[3])+'</i>' : '')+'</span>' : '') +
+        '<span class="rpart" style="--zc:var(--z'+st[0]+')"><b>'+st[2]+'</b><small>'+st[1]+(po(st[3]) ? ' · '+po(st[3]) : '')+'</small></span>' +
+        (g.rec ? '<span class="rsep">+</span><span class="rpart" style="--zc:var(--z'+g.rec[0]+')"><b>'+g.rec[2]+'</b><small>'+g.rec[1]+(po(g.rec[3]) && g.rec[3] !== 'easy' ? ' · '+po(g.rec[3]) : '')+'</small></span>' : '') +
         '</span></div></div><div class="d tnum">'+total+'</div></div>';
     }
     return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+po(st[3])+'</div></div><div class="d tnum">'+st[2]+'</div></div>';
@@ -507,7 +508,7 @@ function detail(q){
       '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink" title="Estimated session time">Est. '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
       (s.note ? '<div class="obj">'+s.note+'</div>' : '') + '</div>' +
       '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
-    '<div class="profwrap"><div class="prof">'+prof+'</div><div class="plab">'+labels+'</div><div class="pleg">'+legendHtml+'</div></div>' +
+    '<div class="profwrap"><div class="prof">'+prof+'</div></div>' +
     '<div class="blocks">'+blocks+'</div>' +
     (x.extra ? '' : '<div class="mv"><span class="lbl">Move to</span>' + DAYS.map(function(dd, i){ var ds = ymd(addDays(wkStart, i)); return '<button type="button" class="pk'+(dd===x.dow?" on":"")+'" data-d="'+ds+'">'+dd.slice(0,1)+dd.slice(1).toLowerCase()+'</button>'; }).join('') + '<span class="mvhint">or drag it on the calendar</span></div>') +
     '<div class="ft">' + (x.extra ? '<button type="button" id="del" class="danger">'+icon('close',18,'#9E4631')+'Delete run</button>' : s.done ? '<div class="on">'+icon('complete',18,'#2E8A75')+'Logged run</div>' : '<button type="button" id="tog" class="'+(isDone?'on':'')+'">'+icon('complete',18,isDone?'#2E8A75':'#2A2E2D')+(isDone?'Logged · tap to undo':'Log as done')+'</button>') + '<button type="button" id="closep">'+icon('close',18,'#2A2E2D')+'Close</button></div>';
