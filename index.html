@@ -508,7 +508,7 @@ function detail(q){
       '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink">≈ '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
       (s.note ? '<div class="obj">'+s.note+'</div>' : '') + '</div>' +
       '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
-    '<div class="profwrap"><div class="prof">'+prof+'</div><div class="plab">'+labels+'</div><div class="pleg">'+legendHtml+'</div></div>' + howHtml +
+    '<div class="profwrap"><div class="prof">'+prof+'</div><div class="plab">'+labels+'</div><div class="pleg">'+legendHtml+'</div></div>' +
     '<div class="blocks">'+blocks+'</div>' +
     (x.extra ? '' : '<div class="mv"><span class="lbl">Move to</span>' + DAYS.map(function(dd, i){ var ds = ymd(addDays(wkStart, i)); return '<button type="button" class="pk'+(dd===x.dow?" on":"")+'" data-d="'+ds+'">'+dd.slice(0,1)+dd.slice(1).toLowerCase()+'</button>'; }).join('') + '<span class="mvhint">or drag it on the calendar</span></div>') +
     '<div class="ft">' + (x.extra ? '<button type="button" id="del" class="danger">'+icon('close',18,'#9E4631')+'Delete run</button>' : s.done ? '<div class="on">'+icon('complete',18,'#2E8A75')+'Logged run</div>' : '<button type="button" id="tog" class="'+(isDone?'on':'')+'">'+icon('complete',18,isDone?'#2E8A75':'#2A2E2D')+(isDone?'Logged · tap to undo':'Log as done')+'</button>') + '<button type="button" id="closep">'+icon('close',18,'#2A2E2D')+'Close</button></div>';
