@@ -155,6 +155,16 @@ button{font:inherit;color:inherit}
 .blk .t .n .pill{margin-left:0!important}
 .blk .t .g{font-size:12px;color:var(--ink600);margin-top:3px;line-height:1.4}
 .blk .d{font-family:var(--body);font-weight:600;font-size:15px;color:var(--ink);white-space:nowrap}
+.blk.rep{grid-column:1/-1}
+.rp{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rx{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;white-space:nowrap}
+.rset{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 10px;border:1.5px solid var(--ink200);border-radius:10px;background:var(--paper)}
+.rpart{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink600);white-space:nowrap}
+.rpart::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--zc);flex:none}
+.rpart b{color:var(--ink);font-weight:700}
+.rpart i{font-style:normal;color:var(--ink500)}
+.rsep{font-family:var(--mono);color:var(--ink300);font-size:12px}
+@media (max-width:760px){.rset{padding:6px 8px;gap:6px}.rpart{font-size:12.5px;white-space:normal}.rx{font-size:18px}}
 .det .ft{display:flex;border-top:1px solid var(--ink100);margin-top:10px}
 .det .ft > *{flex:1;padding:13px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:var(--body);font-size:11px;font-weight:600;color:var(--ink600)}
 .det .ft > * + *{border-left:1px solid var(--ink100)}
@@ -597,14 +607,18 @@ function detail(q){
   });
   var legend = [], seen = {}; steps.forEach(function(st){ var k = st[0]+'|'+st[1]; if (!seen[k]) { seen[k] = 1; legend.push({ z:st[0], name:st[1], target:st[3] }); } });
   var legendHtml = legend.map(function(l){ return '<span><i style="background:var(--z'+l.z+')"></i>'+l.name+(l.target ? ' · '+l.target : '')+'</span>'; }).join('');
-  var how = grouped(steps).map(function(g){ var st = g.work; return g.reps > 1 ? g.reps+' × '+st[2]+' '+st[1].toLowerCase()+' at '+st[3]+(g.rec ? ' with '+g.rec[2]+' '+g.rec[1].toLowerCase()+' between' : '') : st[2]+' '+st[1].toLowerCase()+(st[3] ? ' ('+st[3]+')' : ''); });
+  var how = grouped(steps).map(function(g){ var st = g.work; return g.reps > 1 ? g.reps+' × ('+st[2]+' '+st[1].toLowerCase()+' at '+st[3]+(g.rec ? ' + '+g.rec[2]+' '+g.rec[1].toLowerCase() : '')+')' : st[2]+' '+st[1].toLowerCase()+(st[3] ? ' ('+st[3]+')' : ''); });
   var howHtml = how.length ? '<div class="how"><span class="lbl">How to run it</span><ol>'+how.map(function(h){ return '<li>'+h+'</li>'; }).join('')+'</ol></div>' : '';
   var blocks = grouped(steps).map(function(g){
     var st = g.work, kmv = parseFloat(st[2]), isKm = /km$/.test(st[2]) && !isNaN(kmv);
-    var name = g.reps > 1 ? g.reps + ' × ' + st[2] + ' ' + st[1] : st[1];
-    var det = g.reps > 1 ? st[2] + ' @ ' + st[3] + (g.rec ? ' · ' + g.rec[2] + ' ' + (g.rec[1]||'').toLowerCase() : '') : st[3];
-    var right = g.reps > 1 && isKm ? (Math.round(kmv*g.reps*10)/10).toFixed(1) + ' km' : (g.reps > 1 ? '' : st[2]);
-    return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+name+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+det+'</div></div><div class="d tnum">'+right+'</div></div>';
+    if (g.reps > 1) {
+      var total = isKm ? (Math.round(kmv*g.reps*10)/10).toFixed(1) + ' km' : '';
+      return '<div class="blk rep" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="rp"><span class="rx">'+g.reps+' ×</span><span class="rset">' +
+        '<span class="rpart" style="--zc:var(--z'+st[0]+')"><b>'+st[2]+'</b> '+st[1]+(st[3] ? ' <i>@ '+st[3]+'</i>' : '')+'</span>' +
+        (g.rec ? '<span class="rsep">+</span><span class="rpart" style="--zc:var(--z'+g.rec[0]+')"><b>'+g.rec[2]+'</b> '+g.rec[1].toLowerCase()+(g.rec[3] && g.rec[3] !== 'easy' ? ' <i>'+g.rec[3]+'</i>' : '')+'</span>' : '') +
+        '</span></div></div><div class="d tnum">'+total+'</div></div>';
+    }
+    return '<div class="blk" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="n">'+st[1]+' <span class="pill z" style="--zc:var(--z'+st[0]+');margin-left:6px;padding:3px 7px;font-size:9px">Z'+st[0]+'</span></div><div class="g">'+st[3]+'</div></div><div class="d tnum">'+st[2]+'</div></div>';
   }).join('');
   var state = isDone ? ['mint','Logged'] : ymd(date)===today ? ['mint','Today'] : ['slate','Upcoming'];
   var wkStart = addDays(date, -((date.getDay()+6)%7));
