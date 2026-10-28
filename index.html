@@ -20,7 +20,7 @@
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1180px;margin:0 auto;padding-block:22px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:440px;margin:0 auto;padding-block:22px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .press{transition:transform .12s ease,opacity .12s ease}.press:active{transform:scale(.985);opacity:.9}
 .tnum{font-variant-numeric:tabular-nums}
 button{font:inherit;color:inherit}
@@ -146,7 +146,7 @@ button{font:inherit;color:inherit}
 .how .lbl{font-size:9px}
 .how ol{margin:6px 0 0;padding-left:18px;font-size:13.5px;line-height:1.55;color:var(--ink)}
 .how li::marker{font-family:var(--mono);font-size:11px;color:var(--ink400)}
-@media (max-width:760px){.plab span{font-size:7.5px}.plab span b{font-size:9px}}
+@media (min-width:0px){.plab span{font-size:7.5px}.plab span b{font-size:9px}}
 .blocks{padding:12px 18px 6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
 .blk{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--ink100);border-radius:12px;background:var(--bone)}
 .blk .b{width:4px;height:36px;border-radius:2px;background:var(--zc);flex:none}
@@ -164,7 +164,7 @@ button{font:inherit;color:inherit}
 .rpart b{color:var(--ink);font-weight:700;font-size:14px;line-height:1.2}
 .rpart small{font-size:11.5px;color:var(--ink500);line-height:1.3}
 .rsep{font-family:var(--mono);color:var(--ink300);font-size:12px}
-@media (max-width:760px){.rp{align-items:flex-start}.rset{flex-direction:column;align-items:stretch;gap:8px;padding:8px 10px;flex:1}.rsep{display:none}.rpart{white-space:normal}.rx{font-size:18px;padding-top:6px}}
+@media (min-width:0px){.rp{align-items:flex-start}.rset{flex-direction:column;align-items:stretch;gap:8px;padding:8px 10px;flex:1}.rsep{display:none}.rpart{white-space:normal}.rx{font-size:18px;padding-top:6px}}
 .det .ft{display:flex;border-top:1px solid var(--ink100);margin-top:10px}
 .det .ft > *{flex:1;padding:13px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:var(--body);font-size:11px;font-weight:600;color:var(--ink600)}
 .det .ft > * + *{border-left:1px solid var(--ink100)}
@@ -190,7 +190,7 @@ button{font:inherit;color:inherit}
 .lrow .v{text-align:right;white-space:nowrap}
 .lrow .v b{font-family:var(--display);font-weight:700;font-size:17px;color:var(--ink);letter-spacing:-.01em}
 .lrow .v small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--ink400);margin-top:2px}
-@media (max-width:760px){.lrow{grid-template-columns:64px 1fr auto;gap:10px}}
+@media (min-width:0px){.lrow{grid-template-columns:64px 1fr auto;gap:10px}}
 .legend{display:flex;gap:14px;margin-top:4px;padding-top:12px;border-top:1px solid var(--ink100);flex-wrap:wrap}
 .legend span{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;color:var(--ink400);text-transform:uppercase;letter-spacing:.08em}
 .legend i{width:12px;height:12px;border-radius:999px;display:inline-block}
@@ -209,14 +209,14 @@ button{font:inherit;color:inherit}
 .zr .t .d{font-size:11.5px;line-height:1.45;color:var(--ink400);margin-top:2px}
 .zr .v{text-align:right;flex:none;min-width:110px}
 .zr .v.narrow{min-width:40px}
-@media (max-width:760px){.zr{display:grid;grid-template-columns:4px 1fr;gap:4px 12px;padding:12px 16px}.zr .b{grid-row:1/3;align-self:stretch;min-height:0}.zr .t{min-width:0}.zr .v{grid-column:2;text-align:left;min-width:0;display:flex;align-items:baseline;gap:8px}.zr .v .s{margin:0}.zr .v .p{font-size:16px}}
+@media (min-width:0px){.zr{display:grid;grid-template-columns:4px 1fr;gap:4px 12px;padding:12px 16px}.zr .b{grid-row:1/3;align-self:stretch;min-height:0}.zr .t{min-width:0}.zr .v{grid-column:2;text-align:left;min-width:0;display:flex;align-items:baseline;gap:8px}.zr .v .s{margin:0}.zr .v .p{font-size:16px}}
 .zr .v .p{font-family:var(--display);font-weight:700;font-size:17px;white-space:nowrap;letter-spacing:-.01em}
 .zr .v .s{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;color:var(--ink400);margin-top:2px}
 .znote{padding:11px 16px;border-top:1px solid var(--ink100);font-size:11.5px;color:var(--ink400);line-height:1.5}
 .foot{margin-top:32px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .foot .lbl{font-size:9.5px;color:var(--ink300)}
 
-@media (max-width:760px){
+@media (min-width:0px){
   .head{grid-template-columns:1fr;gap:14px;margin-bottom:16px}
   .head h1{font-size:32px}
   .sec{flex-wrap:wrap;gap:4px 12px}
@@ -246,6 +246,8 @@ button{font:inherit;color:inherit}
   .det .hd .disp{font-size:21px}
 }
 @media (prefers-reduced-motion:reduce){.press{transition:none}}
+@media (min-width:760px){body{background:#EDE7DC}.wrap{background:var(--paper);min-height:100vh;box-shadow:0 0 0 1px var(--ink100),0 20px 60px rgba(21,25,26,.10)}}
+#panel{grid-column:1/-1}
 .gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px max(16px,env(safe-area-inset-left,0px))}
 .gbox{width:100%;max-width:380px;padding:30px 26px;text-align:center}
 .gin{width:100%;font:inherit;font-size:15px;padding:13px 14px;border:1.5px solid var(--ink200);border-radius:4px;background:var(--bone);color:var(--ink);outline:none}
@@ -396,12 +398,12 @@ function render(){
           if (sel===id) selected = { x:x, id:id, isDone:isDone, date:x.date };
         });
         grid.appendChild(cell);
+        if (selected && !selected.placedPanel && ymd(selected.date) === ds) {
+          var panel = document.createElement("div"); panel.id = "panel"; panel.appendChild(selected.add ? addForm(selected) : detail(selected)); grid.appendChild(panel); selected.placedPanel = true;
+        }
       })(di);
     }
     body.appendChild(grid);
-    if (selected && !selected.placedPanel && ymd(selected.date) >= ymd(w.start) && ymd(selected.date) <= ymd(w.end)) {
-      var panel = document.createElement("div"); panel.id = "panel"; panel.appendChild(selected.add ? addForm(selected) : detail(selected)); body.appendChild(panel); selected.placedPanel = true;
-    }
   });
   cal.appendChild(body);
   root.innerHTML = ""; root.appendChild(cal);
