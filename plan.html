@@ -598,7 +598,7 @@ function expand(steps){
   var out = [];
   (steps||[]).forEach(function(st){
     var o = st[5];
-    if (o && o.reps) { for (var i = 0; i < o.reps; i++) { out.push(st.slice(0,5)); if (o.rec && i < o.reps - 1) out.push(o.rec); } }
+    if (o && o.reps) { for (var i = 0; i < o.reps; i++) { out.push(st.slice(0,5)); if (o.rec) out.push(o.rec); } }
     else out.push(st);
   });
   return out;
