@@ -494,7 +494,7 @@ function grouped(steps){
       if (rec === null) rec = r; else if (!sameStep(r, rec)) break;
       reps++;
     }
-    if (reps > 1) { out.push({ reps:reps, work:w, rec:rec }); i += 2*reps - 1; }
+    if (reps > 1) { var trail = rec && i + 2*reps - 1 < n && sameStep(steps[i + 2*reps - 1], rec); out.push({ reps:reps, work:w, rec:rec, trail:!!trail }); i += 2*reps - 1 + (trail ? 1 : 0); }
     else { out.push({ reps:1, work:w }); i++; }
   }
   return out;
@@ -515,7 +515,7 @@ function detail(q){
     var st = g.work, kmv = parseFloat(st[2]), isKm = /km$/.test(st[2]) && !isNaN(kmv);
     if (g.reps > 1) {
       var recv = g.rec && /km$/.test(g.rec[2]) ? parseFloat(g.rec[2]) : 0;
-      var total = isKm ? (Math.round((kmv*g.reps + recv*(g.reps-1))*10)/10).toFixed(1) + ' km' : '';
+      var total = isKm ? (Math.round((kmv*g.reps + recv*(g.trail ? g.reps : g.reps-1))*10)/10).toFixed(1) + ' km' : '';
       return '<div class="blk rep" style="--zc:var(--z'+st[0]+')"><span class="b"></span><div class="t"><div class="rp"><span class="rx">'+g.reps+' ×</span><span class="rset">' +
         '<span class="rpart" style="--zc:var(--z'+st[0]+')"><b>'+st[2]+'</b><small>'+st[1]+(po(st[3]) ? ' · '+po(st[3]) : '')+'</small></span>' +
         (g.rec ? '<span class="rsep">+</span><span class="rpart" style="--zc:var(--z'+g.rec[0]+')"><b>'+g.rec[2]+'</b><small>'+g.rec[1]+(po(g.rec[3]) && g.rec[3] !== 'easy' ? ' · '+po(g.rec[3]) : '')+'</small></span>' : '') +
