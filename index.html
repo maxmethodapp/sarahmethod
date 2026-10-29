@@ -388,7 +388,7 @@ function render(){
           var c = document.createElement("button"); c.type = "button";
           c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
           c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+tHtml(s)+'</div><div class="sub">'+String(s.sub||s.type||'').split('|').map(function(l){ return '<span>'+l+'</span>'; }).join('')+'</div></div></div>' +
-            '<div class="cft">' + (s.min ? '<span class="km tnum">≈ '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
+            '<div class="cft">' + (estLabel(s, x) ? '<span class="km tnum">≈ '+estLabel(s, x)+'</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
           var k2 = c.querySelector(".chk");
           k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
           k2.addEventListener("change", function(){ ticks[id] = k2.checked; save({tick:id}); render(); });
@@ -455,6 +455,25 @@ function attachDrag(el, x){
   el.addEventListener("pointercancel", end);
 }
 
+function estRange(s){
+  if (!s.steps || !s.steps.length) return s.min ? [s.min, s.min] : null;
+  var lo = 0, hi = 0;
+  expand(s.steps).forEach(function(st){
+    var km = /km$/.test(st[2]) ? parseFloat(st[2]) : (/ m$/.test(st[2]) ? parseFloat(st[2])/1000 : NaN);
+    var pm = /(\d+):(\d\d)\s*–\s*(\d+):(\d\d)/.exec(st[3]||"") || /(\d+):(\d\d)\/km/.exec(st[3]||"");
+    if (!isNaN(km) && pm) {
+      var a = (+pm[1])*60 + (+pm[2]), b = pm[3] != null ? (+pm[3])*60 + (+pm[4]) : a;
+      lo += km*Math.min(a,b)/60; hi += km*Math.max(a,b)/60;
+    } else { lo += st[4]||0; hi += st[4]||0; }
+  });
+  var r5 = function(v){ return Math.max(5, Math.round(v/5)*5); };
+  return [r5(lo), r5(hi)];
+}
+function estLabel(s, x){
+  if (s.done || (x && x.extra)) return s.min ? s.min + " min" : "";
+  var r = estRange(s); if (!r) return "";
+  return (r[0] === r[1] ? r[0] : r[0] + "–" + r[1]) + " min";
+}
 function expand(steps){
   var out = [];
   (steps||[]).forEach(function(st){
@@ -508,7 +527,7 @@ function detail(q){
   var wkStart = addDays(date, -((date.getDay()+6)%7));
   box.innerHTML =
     '<div class="hd"><div><span class="lbl">'+x.dow+' '+date.getDate()+' '+MON[date.getMonth()]+' · '+(x.extra ? 'Extra run' : s.z ? ZN[s.z] : '')+'</span><div class="disp">'+tHtml(s)+'</div>' +
-      '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (s.min ? '<span class="pill ink" title="Estimated session time">Est. '+(s.done||x.extra ? s.min : Math.max(5, Math.round(s.min/5)*5))+' min</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
+      '<div class="pills"><span class="pill '+state[0]+'">'+state[1]+'</span>' + (s.km ? '<span class="pill ink">'+fmtKm(s.km[0],s.km[1])+'</span>' : '') + (estLabel(s, x) ? '<span class="pill ink" title="Estimated session time">Est. '+estLabel(s, x)+'</span>' : '') + (s.z ? '<span class="pill z" style="--zc:var(--z'+s.z+')">Z'+s.z+'</span>' : '') + '</div>' +
       (s.note ? '<div class="obj">'+s.note+'</div>' : '') + '</div>' +
       '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
     '<div class="profwrap"><div class="prof">'+prof+'</div></div>' +
