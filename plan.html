@@ -381,15 +381,33 @@ var PLAN = [
   ]},
   { start:"2026-11-09", focus:"Threshold", sessions:[
     { day:"MON", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
-      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy ahead of tomorrow's VO2 work." },
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy ahead of tomorrow's threshold work." },
     { day:"TUE", z:4, type:"Threshold", kind:"Threshold", title:"5 × 1.2 km", sub:"5 × 1.2 km @ 4:07–4:17|0.4 km jog after each", km:[11.0,11.0], min:60,
       steps:[[2,"Warm-up","2.0 km","Z2 · 4:56–5:50",11],[4,"Threshold","1.2 km","4:07–4:17",5,{reps:5, rec:[1,"Jog","0.4 km","Z1 · 5:50–7:01",2]}],[1,"Cool-down","1.0 km","Z1 · 5:50–7:01",6]],
       note:"98–102% of threshold speed. RPE 6–8. Even, strong reps — hold the pace, don't let it drift." },
     { day:"WED", rest:true },
+    { day:"THU", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy day." },
+    { day:"FRI", z:2, type:"Long", kind:"Long run", title:"15.2 km + strides", sub:"14 km @ 4:56–5:50|4 × 100 m strides to finish", km:[15.2,15.2], min:80,
+      steps:[[2,"Endurance","14 km","Z2 · 4:56–5:50",75],[5,"Stride","100 m","fast, relaxed",0.5,{reps:4, rec:[1,"Jog","200 m","Z1 · 5:50–7:01",1]}]], note:"Long and steady in Z2. Finish with relaxed, fast strides to wake the legs up." },
+    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy." },
+    { day:"SUN", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy." }
+  ]},
+  { start:"2026-11-16", focus:"5K PB", sessions:[
+    { day:"MON", z:1, type:"Easy", kind:"Easy", title:"6.2 km + strides", sub:"5 km @ 5:50–7:01|4 × 100 m strides to finish", km:[6.2,6.2], min:35,
+      steps:[[1,"Easy","5 km","Z1 · 5:50–7:01",30],[5,"Stride","100 m","fast, relaxed",0.5,{reps:4, rec:[1,"Jog","200 m","Z1 · 5:50–7:01",1]}]], note:"Easy with a few strides — keep the legs sharp before the PB." },
+    { day:"TUE", z:5, type:"VO2", kind:"5K PB", title:"round the Downs", sub:"5 km PB @ 3:50–3:55|2 km WU + 2 km CD", km:[9.0,9.0], min:40,
+      steps:[[2,"Warm-up","2 km","Z2 · 4:56–5:50",10],[5,"5K effort","5 km","3:50–3:55",19],[1,"Cool-down","2 km","Z1 · 5:50–7:01",12]], note:"Race it. Easy 10 min and a few strides to warm up, then empty the tank over the 5 km. Even early, strong finish. Go get the PB." },
+    { day:"WED", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy, legs will be tired from the PB." },
     { day:"THU", rest:true },
     { day:"FRI", rest:true },
-    { day:"SAT", rest:true },
-    { day:"SUN", rest:true }
+    { day:"SAT", z:2, type:"Endurance", kind:"Endurance", title:"11 km", sub:"11 km @ 4:56–5:50", km:[11.0,11.0], min:60,
+      steps:[[2,"Endurance","11 km","Z2 · 4:56–5:50",60]], note:"Steady Z2." },
+    { day:"SUN", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy." }
   ]}
 ];
 var RACE = "2026-12-12";
