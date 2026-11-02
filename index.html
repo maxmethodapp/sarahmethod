@@ -606,7 +606,9 @@ function addForm(q){
 
 function drawLoad(byDate, weeks){
   var el = document.getElementById("load-bars"); if (!el) return;
-  var rows = weeks.map(function(w, k){ var t = weekTotals(byDate, w); t.label = rangeLabel(w.start, w.end); t.cur = ymd(w.start)<=today && ymd(w.end)>=today; return t; }).filter(function(t){ return t.any || t.cur; });
+  var ci = curWeekIndex(weeks);
+  var win = []; for (var k = ci-1; k <= ci+1; k++) if (k >= 0 && k < weeks.length) win.push(weeks[k]);
+  var rows = win.map(function(w){ var t = weekTotals(byDate, w); t.label = rangeLabel(w.start, w.end); t.cur = ymd(w.start)<=today && ymd(w.end)>=today; return t; });
   var max = Math.max(10, Math.max.apply(null, rows.map(function(w){ return w.hi; })));
   el.innerHTML = rows.map(function(w){
     var l = w.logged/max*100, p = (w.lo-w.logged)/max*100, r = (w.hi-w.lo)/max*100;
