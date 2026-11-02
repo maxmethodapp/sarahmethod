@@ -10,7 +10,7 @@
   --mint:#49BBA0; --mint600:#2E8A75; --mint700:#1F5C4E; --mint50:#F5FAF8; --mint100:#E5F1EC; --mint200:#C8E6DC;
   --ink50:#FAFAF8; --ink100:#EDEBE7; --ink200:#D5D2CC; --ink300:#A8ACA8; --ink400:#6E726F; --ink500:#3E4341; --ink600:#2A2E2D;
   --amber:#E0A24A; --coral:#D77559; --slate:#5B7B85;
-  --z1:#5B7B85; --z2:#2E8A75; --z3:#E0A24A; --z4:#D77559; --z5:#C4443A;
+  --z1:#5B7B85; --z2:#2E8A75; --z3:#E0A24A; --z4:#D77559; --z5:#C4443A; --z6:#8E2A22;
   --display:'Glacial Indifference',system-ui,sans-serif;
   --body:'DM Sans',system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,monospace;
@@ -305,11 +305,12 @@ button{font:inherit;color:inherit}
 
   <div class="sec"><span class="lbl">Training zones</span><span class="r">% of threshold pace <b>4:12/km</b></span></div>
   <div class="card zcard">
-      <div class="zr" style="--zc:var(--z1)"><span class="b"></span><div class="t"><div class="n">Z1 · Easy<span class="rpe">RPE 1–2</span></div><div class="d">Barely working. Full conversation.</div></div><div class="v"><div class="p tnum">5:50–7:01</div><div class="s">60–72% of threshold</div></div></div>
-      <div class="zr" style="--zc:var(--z2)"><span class="b"></span><div class="t"><div class="n">Z2 · Aerobic endurance<span class="rpe">RPE 2–3</span></div><div class="d">The base. All-day pace, full sentences. The pace is a ceiling, not a target.</div></div><div class="v"><div class="p tnum">4:56–5:50</div><div class="s">&gt;72–85% of threshold</div></div></div>
-      <div class="zr" style="--zc:var(--z3)"><span class="b"></span><div class="t"><div class="n">Z3 · Tempo<span class="rpe">RPE 4–5</span></div><div class="d">Sustained pressure. A few words at a time.</div></div><div class="v"><div class="p tnum">4:28–4:56</div><div class="s">&gt;85–94% of threshold</div></div></div>
-      <div class="zr" style="--zc:var(--z4)"><span class="b"></span><div class="t"><div class="n">Z4 · Threshold<span class="rpe">RPE 6–8</span></div><div class="d">Half to 10k pace. Hard but held.</div></div><div class="v"><div class="p tnum">4:07–4:28</div><div class="s">&gt;94–102% of threshold</div></div></div>
-      <div class="zr" style="--zc:var(--z5)"><span class="b"></span><div class="t"><div class="n">Z5 · VO2<span class="rpe">RPE 9–10</span></div><div class="d">Short, very hard reps.</div></div><div class="v"><div class="p tnum">&lt;4:07</div><div class="s">&gt;102% of threshold</div></div></div>
+      <div class="zr" style="--zc:var(--z1)"><span class="b"></span><div class="t"><div class="n">Z1 · Easy<span class="rpe">RPE 1–2</span></div><div class="d">Barely working. Full conversation.</div></div><div class="v"><div class="p tnum">5:50–7:00</div><div class="s">60–72% of threshold</div></div></div>
+      <div class="zr" style="--zc:var(--z2)"><span class="b"></span><div class="t"><div class="n">Z2 · Aerobic endurance<span class="rpe">RPE 2–3</span></div><div class="d">The base. All-day pace, full sentences. The pace is a ceiling, not a target.</div></div><div class="v"><div class="p tnum">5:07–5:50</div><div class="s">&gt;72–82% of threshold</div></div></div>
+      <div class="zr" style="--zc:var(--z3)"><span class="b"></span><div class="t"><div class="n">Z3 · Tempo<span class="rpe">RPE 4–5</span></div><div class="d">Sustained pressure. A few words at a time.</div></div><div class="v"><div class="p tnum">4:37–5:07</div><div class="s">&gt;82–91% of threshold</div></div></div>
+      <div class="zr" style="--zc:var(--z4)"><span class="b"></span><div class="t"><div class="n">Z4 · Threshold<span class="rpe">RPE 6–8</span></div><div class="d">Half to 10k pace. Hard but held.</div></div><div class="v"><div class="p tnum">4:07–4:37</div><div class="s">&gt;91–102% of threshold</div></div></div>
+      <div class="zr" style="--zc:var(--z5)"><span class="b"></span><div class="t"><div class="n">Z5 · VO2<span class="rpe">RPE 9</span></div><div class="d">Short, very hard reps.</div></div><div class="v"><div class="p tnum">3:45–4:07</div><div class="s">&gt;102–112% of threshold</div></div></div>
+      <div class="zr" style="--zc:var(--z6)"><span class="b"></span><div class="t"><div class="n">Z6 · Speed<span class="rpe">RPE 10</span></div><div class="d">Flat-out. Too short to measure by heart rate.</div></div><div class="v"><div class="p tnum">&lt;3:45</div><div class="s">&gt;112% of threshold</div></div></div>
     <div class="znote">Paces are min/km. Efforts under ~90 s go by feel. Trail and hills: feel, not pace.</div>
   </div>
 
@@ -330,90 +331,90 @@ var PLAN = [
     { day:"WED", rest:true },
     { day:"THU", z:2, type:"Logged", done:true, kind:"Endurance", title:"4.7 km", sub:"4.7 km @ 4:57/km", km:[4.7,4.7], min:23,
       steps:[[2,"Endurance","4.7 km","4:57/km",23]], note:"Quicker through the run. Easier than this next time." },
-    { day:"FRI", z:1, type:"Shakeout", kind:"Shakeout", title:"3.5 km + strides", sub:"3.5 km @ 5:50–7:01|3 × 50 m strides|1.4 km easy", km:[5.7,5.7], min:33,
-      steps:[[1,"Easy","3.5 km","Z1 · 5:50–7:01",20],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","Z1 · 5:50–7:01",1]}],[1,"Easy","1.4 km","Z1 · 5:50–7:01",8]], note:"Pre-Parkrun. Keep it very easy." },
+    { day:"FRI", z:1, type:"Shakeout", kind:"Shakeout", title:"3.5 km + strides", sub:"3.5 km @ 5:50–7:00|3 × 50 m strides|1.4 km easy", km:[5.7,5.7], min:33,
+      steps:[[1,"Easy","3.5 km","Z1 · 5:50–7:00",20],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","Z1 · 5:50–7:00",1]}],[1,"Easy","1.4 km","Z1 · 5:50–7:00",8]], note:"Pre-Parkrun. Keep it very easy." },
     { day:"SAT", z:4, type:"Parkrun", kind:"Parkrun", title:"5 km", sub:"5 km · free effort", km:[5,5], min:25,
       steps:[[4,"Parkrun","5 km","run it how you feel",25]], note:"No target." },
     { day:"SUN", rest:true }
   ]},
   { start:"2026-10-19", focus:"Endurance · first tempo", sessions:[
-    { day:"MON", z:2, type:"Long", kind:"Long run", title:"11.5 km", sub:"11.5 km @ 4:56–5:50|trail or road", km:[11.5,11.5], min:60,
-      steps:[[2,"Long run","11.5 km","Z2 · 4:56–5:50",60]], note:"Trail or road. Trail will be slower per km, that's fine, go by feel." },
-    { day:"TUE", z:2, type:"Endurance", kind:"Endurance", title:"5.8 km", sub:"5.8 km @ 4:56–5:50", km:[5.8,5.8], min:30,
-      steps:[[2,"Endurance","5.8 km","Z2 · 4:56–5:50",30]] },
-    { day:"WED", z:2, type:"Endurance", kind:"Endurance", title:"7.5 km + strides", sub:"6.7 km @ 4:56–5:50|3 × 50 m strides", km:[7.5,7.5], min:38,
-      steps:[[2,"Endurance","6.7 km","Z2 · 4:56–5:50",35],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","Z1 · 5:50–7:01",1]}]], note:"Strides fast and relaxed, not a sprint." },
+    { day:"MON", z:2, type:"Long", kind:"Long run", title:"11.5 km", sub:"11.5 km @ 5:07–5:50|trail or road", km:[11.5,11.5], min:60,
+      steps:[[2,"Long run","11.5 km","Z2 · 5:07–5:50",60]], note:"Trail or road. Trail will be slower per km, that's fine, go by feel." },
+    { day:"TUE", z:2, type:"Endurance", kind:"Endurance", title:"5.8 km", sub:"5.8 km @ 5:07–5:50", km:[5.8,5.8], min:30,
+      steps:[[2,"Endurance","5.8 km","Z2 · 5:07–5:50",30]] },
+    { day:"WED", z:2, type:"Endurance", kind:"Endurance", title:"7.5 km + strides", sub:"6.7 km @ 5:07–5:50|3 × 50 m strides", km:[7.5,7.5], min:38,
+      steps:[[2,"Endurance","6.7 km","Z2 · 5:07–5:50",35],[5,"Stride","50 m","fast, relaxed",0.25,{reps:3, rec:[1,"Jog","200 m","Z1 · 5:50–7:00",1]}]], note:"Strides fast and relaxed, not a sprint." },
     { day:"THU", rest:true },
     { day:"FRI", rest:true },
     { day:"SAT", z:3, type:"Tempo", kind:"Tempo", title:"3 × 1.8 km", sub:"3 × 1.8 km @ 4:28–4:40|0.2 km jog after each", km:[9.0,9.0], min:44,
-      steps:[[2,"Warm-up","1.9 km","Z2 · 4:56–5:50",10],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.2 km","Z1 · 5:50–7:01",1.5],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.2 km","Z1 · 5:50–7:01",1.5],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.2 km","Z1 · 5:50–7:01",1.5],[1,"Cool-down","1.1 km","Z1 · 5:50–7:01",7]],
+      steps:[[2,"Warm-up","1.9 km","Z2 · 5:07–5:50",10],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.2 km","Z1 · 5:50–7:00",1.5],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.2 km","Z1 · 5:50–7:00",1.5],[3,"Tempo","1.8 km","4:28–4:40",8],[1,"Jog","0.2 km","Z1 · 5:50–7:00",1.5],[1,"Cool-down","1.1 km","Z1 · 5:50–7:00",7]],
       note:"90–94% of threshold pace. RPE 4–5. Controlled, not a race." },
     { day:"SUN", rest:true }
   ]},
   { start:"2026-10-26", focus:"Threshold", sessions:[
-    { day:"MON", z:2, type:"Endurance", kind:"Endurance", title:"9.1 km + strides", sub:"7.7 km @ 4:56–5:50|3 × 100 m strides|0.5 km cool-down", km:[9.1,9.1], min:46,
-      steps:[[2,"Endurance","7.7 km","Z2 · 4:56–5:50",40],[5,"Stride","100 m","fast, relaxed",0.5,{reps:3, rec:[1,"Jog","200 m","Z1 · 5:50–7:01",1]}],[1,"Cool-down","0.5 km","Z1 · 5:50–7:01",3]] },
+    { day:"MON", z:2, type:"Endurance", kind:"Endurance", title:"9.1 km + strides", sub:"7.7 km @ 5:07–5:50|3 × 100 m strides|0.5 km cool-down", km:[9.1,9.1], min:46,
+      steps:[[2,"Endurance","7.7 km","Z2 · 5:07–5:50",40],[5,"Stride","100 m","fast, relaxed",0.5,{reps:3, rec:[1,"Jog","200 m","Z1 · 5:50–7:00",1]}],[1,"Cool-down","0.5 km","Z1 · 5:50–7:00",3]] },
 
     { day:"TUE", rest:true },
     { day:"WED", z:4, type:"Threshold", kind:"Threshold", title:"4 × 1.2 km", sub:"4 × 1.2 km @ 4:12–4:25|0.2 km jog after each", km:[8.5,8.5], min:42,
-      steps:[[2,"Warm-up","1.8 km","Z2 · 4:56–5:50",10],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:01",1.5],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:01",1.5],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:01",1.5],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:01",1.5],[1,"Cool-down","1.1 km","Z1 · 5:50–7:01",7]],
+      steps:[[2,"Warm-up","1.8 km","Z2 · 5:07–5:50",10],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:00",1.5],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:00",1.5],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:00",1.5],[4,"Threshold","1.2 km","4:12–4:25",5],[1,"Jog","0.2 km","Z1 · 5:50–7:00",1.5],[1,"Cool-down","1.1 km","Z1 · 5:50–7:00",7]],
       note:"95–100% of threshold pace. RPE 6–8. Even pace across all four." },
-    { day:"THU", z:2, type:"Endurance", kind:"Endurance", title:"5.6 km", sub:"5.6 km @ 4:56–5:50", km:[5.6,5.6], min:30,
-      steps:[[2,"Endurance","5.6 km","Z2 · 4:56–5:50",30]], note:"Easy after yesterday. Bottom of the band if legs are heavy." },
+    { day:"THU", z:2, type:"Endurance", kind:"Endurance", title:"5.6 km", sub:"5.6 km @ 5:07–5:50", km:[5.6,5.6], min:30,
+      steps:[[2,"Endurance","5.6 km","Z2 · 5:07–5:50",30]], note:"Easy after yesterday. Bottom of the band if legs are heavy." },
 
     { day:"FRI", rest:true },
-    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"6.3 km", sub:"6.3 km @ 5:50–7:01", km:[6.3,6.3], min:40,
-      steps:[[1,"Easy","6.3 km","Z1 · 5:50–7:01",40]], note:"Properly easy. Slower than feels natural." },
+    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"6.3 km", sub:"6.3 km @ 5:50–7:00", km:[6.3,6.3], min:40,
+      steps:[[1,"Easy","6.3 km","Z1 · 5:50–7:00",40]], note:"Properly easy. Slower than feels natural." },
     { day:"SUN", rest:true }
   ]},
   { start:"2026-11-02", focus:"Hills · endurance", sessions:[
     { day:"MON", rest:true },
     { day:"TUE", rest:true },
     { day:"WED", z:5, type:"VO2", kind:"Hill sprints", title:"6 × 200 m", sub:"6 × 200 m hill @ hard|2 min jog after each", km:[6.0,6.0], min:34,
-      steps:[[2,"Warm-up","2.0 km","Z2 · 4:56–5:50",11],[5,"Hill sprint","200 m","hard",0.75,{reps:6, rec:[1,"Jog","300 m","Z1 · 5:50–7:01",2]}],[1,"Cool-down","1.0 km","Z1 · 5:50–7:01",6]],
+      steps:[[2,"Warm-up","2.0 km","Z2 · 5:07–5:50",11],[5,"Hill sprint","200 m","hard",0.75,{reps:6, rec:[1,"Jog","300 m","Z1 · 5:50–7:00",2]}],[1,"Cool-down","1.0 km","Z1 · 5:50–7:00",6]],
       note:"Find a steady hill. Powerful and tall, drive the arms. Jog back down for the recovery. Max effort, not a flat-out sprint." },
-    { day:"THU", z:2, type:"Endurance", kind:"Endurance", title:"11 km", sub:"11 km @ 4:56–5:50", km:[11.0,11.0], min:60,
-      steps:[[2,"Endurance","11 km","Z2 · 4:56–5:50",60]], note:"Relaxed and steady. Keep it conversational throughout." },
-    { day:"FRI", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:01", km:[5,5], min:30,
-      steps:[[1,"Easy","5 km","Z1 · 5:50–7:01",30]], note:"Properly easy — flush the legs out after the hills." },
+    { day:"THU", z:2, type:"Endurance", kind:"Endurance", title:"11 km", sub:"11 km @ 5:07–5:50", km:[11.0,11.0], min:60,
+      steps:[[2,"Endurance","11 km","Z2 · 5:07–5:50",60]], note:"Relaxed and steady. Keep it conversational throughout." },
+    { day:"FRI", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:00", km:[5,5], min:30,
+      steps:[[1,"Easy","5 km","Z1 · 5:50–7:00",30]], note:"Properly easy — flush the legs out after the hills." },
     { day:"SAT", rest:true },
     { day:"SUN", rest:true }
   ]},
   { start:"2026-11-09", focus:"Threshold", sessions:[
-    { day:"MON", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:01", km:[5,5], min:30,
-      steps:[[1,"Easy","5 km","Z1 · 5:50–7:01",30]], note:"Easy ahead of tomorrow's threshold work." },
+    { day:"MON", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:00", km:[5,5], min:30,
+      steps:[[1,"Easy","5 km","Z1 · 5:50–7:00",30]], note:"Easy ahead of tomorrow's threshold work." },
     { day:"TUE", z:4, type:"Threshold", kind:"Threshold", title:"5 × 1.2 km", sub:"5 × 1.2 km @ 4:07–4:17|0.4 km jog after each", km:[11.0,11.0], min:60,
-      steps:[[2,"Warm-up","2.0 km","Z2 · 4:56–5:50",11],[4,"Threshold","1.2 km","4:07–4:17",5,{reps:5, rec:[1,"Jog","0.4 km","Z1 · 5:50–7:01",2]}],[1,"Cool-down","1.0 km","Z1 · 5:50–7:01",6]],
+      steps:[[2,"Warm-up","2.0 km","Z2 · 5:07–5:50",11],[4,"Threshold","1.2 km","4:07–4:17",5,{reps:5, rec:[1,"Jog","0.4 km","Z1 · 5:50–7:00",2]}],[1,"Cool-down","1.0 km","Z1 · 5:50–7:00",6]],
       note:"98–102% of threshold speed. RPE 6–8. Even, strong reps — hold the pace, don't let it drift." },
     { day:"WED", rest:true },
-    { day:"THU", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:01", km:[5,5], min:30,
-      steps:[[1,"Easy","5 km","Z1 · 5:50–7:01",30]], note:"Easy day." },
-    { day:"FRI", z:2, type:"Long", kind:"Long run", title:"15.2 km + strides", sub:"14 km @ 4:56–5:50|4 × 100 m strides to finish", km:[15.2,15.2], min:80,
-      steps:[[2,"Endurance","14 km","Z2 · 4:56–5:50",75],[5,"Stride","100 m","fast, relaxed",0.5,{reps:4, rec:[1,"Jog","200 m","Z1 · 5:50–7:01",1]}]], note:"Long and steady in Z2. Finish with relaxed, fast strides to wake the legs up." },
+    { day:"THU", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:00", km:[5,5], min:30,
+      steps:[[1,"Easy","5 km","Z1 · 5:50–7:00",30]], note:"Easy day." },
+    { day:"FRI", z:2, type:"Long", kind:"Long run", title:"15.2 km + strides", sub:"14 km @ 5:07–5:50|4 × 100 m strides to finish", km:[15.2,15.2], min:80,
+      steps:[[2,"Endurance","14 km","Z2 · 5:07–5:50",75],[5,"Stride","100 m","fast, relaxed",0.5,{reps:4, rec:[1,"Jog","200 m","Z1 · 5:50–7:00",1]}]], note:"Long and steady in Z2. Finish with relaxed, fast strides to wake the legs up." },
     { day:"SAT", rest:true },
     { day:"SUN", rest:true }
   ]},
   { start:"2026-11-16", focus:"Rest week", sessions:[
-    { day:"MON", z:1, type:"Easy", kind:"Easy", title:"5.2 km + strides", sub:"4 km @ 5:50–7:01|4 × 100 m strides to finish", km:[5.2,5.2], min:30,
-      steps:[[1,"Easy","4 km","Z1 · 5:50–7:01",24],[5,"Stride","100 m","fast, relaxed",0.5,{reps:4, rec:[1,"Jog","200 m","Z1 · 5:50–7:01",1]}]], note:"Easy with a few strides — keep the legs sharp before the PB." },
+    { day:"MON", z:1, type:"Easy", kind:"Easy", title:"5.2 km + strides", sub:"4 km @ 5:50–7:00|4 × 100 m strides to finish", km:[5.2,5.2], min:30,
+      steps:[[1,"Easy","4 km","Z1 · 5:50–7:00",24],[5,"Stride","100 m","fast, relaxed",0.5,{reps:4, rec:[1,"Jog","200 m","Z1 · 5:50–7:00",1]}]], note:"Easy with a few strides — keep the legs sharp before the PB." },
     { day:"TUE", z:5, type:"VO2", kind:"5K PB", title:"round the Downs", sub:"5 km PB @ 3:50–3:55|2 km WU + 2 km CD", km:[9.0,9.0], min:40,
-      steps:[[2,"Warm-up","2 km","Z2 · 4:56–5:50",10],[5,"5K effort","5 km","3:50–3:55",19],[1,"Cool-down","2 km","Z1 · 5:50–7:01",12]], note:"Race it. Easy 10 min and a few strides to warm up, then empty the tank over the 5 km. Even early, strong finish. Go get the PB." },
-    { day:"WED", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:01", km:[5,5], min:30,
-      steps:[[1,"Easy","5 km","Z1 · 5:50–7:01",30]], note:"Easy, legs will be tired from the PB." },
+      steps:[[2,"Warm-up","2 km","Z2 · 5:07–5:50",10],[5,"5K effort","5 km","3:50–3:55",19],[1,"Cool-down","2 km","Z1 · 5:50–7:00",12]], note:"Race it. Easy 10 min and a few strides to warm up, then empty the tank over the 5 km. Even early, strong finish. Go get the PB." },
+    { day:"WED", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:00", km:[5,5], min:30,
+      steps:[[1,"Easy","5 km","Z1 · 5:50–7:00",30]], note:"Easy, legs will be tired from the PB." },
     { day:"THU", rest:true },
     { day:"FRI", rest:true },
-    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:01", km:[5,5], min:30,
-      steps:[[1,"Easy","5 km","Z1 · 5:50–7:01",30]], note:"Easy run — rest week." },
-    { day:"SUN", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:01", km:[5,5], min:30,
-      steps:[[1,"Easy","5 km","Z1 · 5:50–7:01",30]], note:"Easy." }
+    { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:00", km:[5,5], min:30,
+      steps:[[1,"Easy","5 km","Z1 · 5:50–7:00",30]], note:"Easy run — rest week." },
+    { day:"SUN", z:1, type:"Easy", kind:"Easy", title:"5 km", sub:"5 km @ 5:50–7:00", km:[5,5], min:30,
+      steps:[[1,"Easy","5 km","Z1 · 5:50–7:00",30]], note:"Easy." }
   ]}
 ];
 var RACE = "2026-12-12";
 // ---- END PLAN ----
 
 var DAYS = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
-var ZN = {1:"Easy",2:"Aerobic endurance",3:"Tempo",4:"Threshold",5:"VO2"};
-var ZH = {1:.22,2:.38,3:.6,4:.8,5:1};
+var ZN = {1:"Easy",2:"Aerobic endurance",3:"Tempo",4:"Threshold",5:"VO2",6:"Speed"};
+var ZH = {1:.22,2:.38,3:.6,4:.8,5:1,6:1};
 var SB_URL = "https://paoanyuhaolrumvgbhyq.supabase.co", SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhb2FueXVoYW9scnVtdmdiaHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2Njk0MjksImV4cCI6MjEwODI0NTQyOX0.owLPE7nzvMNY4XbIbQD82ZOo63hskWZ1lUVRT2VhdXY";
 var KEY = "method-sarah-ticks", MKEY = "method-sarah-moves", AKEY = "method-sarah-auth";
 var ticks = {}, moves = {}, extras = [], sel = null, online = false;
