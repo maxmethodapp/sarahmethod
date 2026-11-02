@@ -52,6 +52,20 @@ button{font:inherit;color:inherit}
 .sec .reset{background:none;border:0;padding:0;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--mint600);cursor:pointer;text-transform:uppercase;margin-left:10px}
 
 /* calendar */
+.wnav{display:flex;align-items:stretch;gap:6px;padding:10px 10px 6px;border-bottom:1px solid var(--ink100);background:var(--bone);position:sticky;top:0;z-index:3}
+.wbtn{width:36px;flex:none;border:1px solid var(--ink100);background:var(--bone);border-radius:10px;font-size:20px;line-height:1;color:var(--ink);cursor:pointer}
+.wbtn:disabled{opacity:.3;cursor:default}
+.wtabs{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;min-width:0}
+.wtab{border:1px solid var(--ink100);background:var(--paper);border-radius:10px;padding:7px 6px;text-align:center;cursor:pointer;min-width:0;display:flex;flex-direction:column;gap:2px;align-items:center}
+.wtab b{font-family:var(--body);font-weight:600;font-size:11.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.wtab small{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink400)}
+.wtab.cur small{color:var(--mint600)}
+.wtab.on{background:var(--ink);border-color:var(--ink)}
+.wtab.on b,.wtab.on small{color:var(--paper)}
+.wtab.over{box-shadow:inset 0 0 0 1.5px var(--mint);background:var(--mint100)}
+.mvdate{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.mvdate span{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink400)}
+.mvdate input{font:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--ink200);border-radius:999px;background:var(--bone);color:var(--ink)}
 .cal{padding:0;overflow:auto;max-height:76vh;position:relative;overscroll-behavior:contain}
 .calhead{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;padding:10px 10px 8px;background:var(--bone);border-bottom:1px solid var(--ink100)}
 .calhead span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink400);text-align:left;padding-left:10px}
@@ -228,7 +242,7 @@ button{font:inherit;color:inherit}
   .stat .v{font-size:19px}
   .cal{max-height:none;overflow:visible}
   .calhead{display:none}
-  .wkrow{position:static;flex-wrap:wrap;gap:2px 10px}
+  .wkrow{position:static;flex-wrap:wrap;gap:2px 10px;padding-top:10px}
   .wkrow .r{white-space:normal}
   .grid{grid-template-columns:1fr;gap:4px}
   .daycell{flex-direction:row;flex-wrap:wrap;align-items:stretch;min-height:0;gap:6px 8px;padding:4px 6px}
@@ -356,59 +370,68 @@ function stats(byDate, weeks){
 function tHtml(s){ return (s.kind ? '<b>'+s.kind+'</b> ' : '') + (s.title ? '<span class="td">'+s.title+'</span>' : ''); }
 function tText(s){ return (s.kind ? s.kind+' ' : '') + (s.title||''); }
 var root = document.getElementById("plan");
-var scrolledOnce = false, keepScroll = null;
+var keepScroll = null, viewWeek = null;
+function curWeekIndex(weeks){ for (var i = 0; i < weeks.length; i++) if (ymd(weeks[i].start) <= today && ymd(weeks[i].end) >= today) return i; return ymd(weeks[0].start) > today ? 0 : weeks.length - 1; }
 function render(){
   var byDate = placed(), weeks = allWeeks();
-  var prevCal = document.getElementById("cal"); if (keepScroll == null && prevCal && scrolledOnce) keepScroll = prevCal.scrollTop;
+  if (viewWeek == null) viewWeek = curWeekIndex(weeks);
+  viewWeek = Math.max(0, Math.min(weeks.length - 1, viewWeek));
+  var curIdx = curWeekIndex(weeks);
   var cal = document.createElement("div"); cal.className = "card cal"; cal.id = "cal";
-  cal.innerHTML = '<div class="calhead">' + DAYS.map(function(dd){ return '<span>'+dd+'</span>'; }).join('') + '</div>';
+  // week switcher: prev / this / next tabs
+  var nav = document.createElement("div"); nav.className = "wnav";
+  var tabs = [viewWeek-1, viewWeek, viewWeek+1].filter(function(i){ return i >= 0 && i < weeks.length; });
+  nav.innerHTML = '<button type="button" class="wbtn" id="wprev" aria-label="Previous week"'+(viewWeek===0?' disabled':'')+'>‹</button>' +
+    '<div class="wtabs">' + tabs.map(function(i){ var w = weeks[i]; return '<button type="button" class="wtab'+(i===viewWeek?' on':'')+(i===curIdx?' cur':'')+'" data-i="'+i+'" data-start="'+ymd(w.start)+'"><b>'+rangeLabel(w.start, w.end)+'</b><small>'+(i===curIdx ? 'This week' : i < curIdx ? 'Past' : 'Upcoming')+'</small></button>'; }).join('') + '</div>' +
+    '<button type="button" class="wbtn" id="wnext" aria-label="Next week"'+(viewWeek===weeks.length-1?' disabled':'')+'>›</button>';
+  cal.appendChild(nav);
   var body = document.createElement("div"); body.className = "calbody";
-  var selected = null, curRow = null;
-  weeks.forEach(function(w, k){
-    var t = weekTotals(byDate, w), isCur = ymd(w.start) <= today && ymd(w.end) >= today;
-    var row = document.createElement("div"); row.className = "wkrow" + (isCur ? " cur" : "");
-    row.innerHTML = '<span class="lbl">'+rangeLabel(w.start, w.end)+(isCur ? ' <b>· This week</b>' : '')+'</span><span class="r">'+(t.any ? '<b>'+fmtKm(t.lo,t.hi)+'</b> · '+fmtMin(t.min) : (w.wi<0 ? 'Not planned yet' : ''))+'</span>';
-    body.appendChild(row); if (isCur) curRow = row;
-    if (w.wi < 0 && !t.any && !isCur) { row.classList.add("collapsed"); return; }
-    var grid = document.createElement("div"); grid.className = "grid";
-    for (var di = 0; di < 7; di++) {
-      (function(di){
-        var date = addDays(w.start, di), ds = ymd(date), items = byDate[ds] || [], addId = "add:"+ds, isToday = ds === today;
-        var cell = document.createElement("div"); cell.className = "daycell" + (isToday ? " today" : "") + (!items.length ? " empty" : ""); cell.setAttribute("data-date", ds);
-        cell.innerHTML = '<div class="dn"><span class="dow">'+DAYS[di]+'</span><span class="num tnum">'+date.getDate()+'</span></div>';
-        if (!items.length) {
-          var r = document.createElement("div"); r.className = "cell rest";
-          r.innerHTML = '<div class="row"><span class="bar"></span><div style="min-width:0"><div class="ttl">Rest day</div><div class="sub">rest</div></div></div><button type="button" class="addrun'+(sel===addId?' on':'')+'">+ Add run</button>';
-          r.querySelector(".addrun").addEventListener("click", function(ev){ ev.stopPropagation(); sel = (sel===addId) ? null : addId; render(); });
-          if (sel===addId) selected = { add:true, date:date, day:DAYS[di] };
-          cell.appendChild(r);
-        }
-        items.forEach(function(x){
-          var s = x.s, id = x.id, isDone = x.isDone, canDrag = !x.extra;
-          var c = document.createElement("button"); c.type = "button";
-          c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
-          c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+tHtml(s)+'</div><div class="sub">'+String(s.sub||s.type||'').split('|').map(function(l){ return '<span>'+l+'</span>'; }).join('')+'</div></div></div>' +
-            '<div class="cft">' + (estLabel(s, x) ? '<span class="km tnum">≈ '+estLabel(s, x)+'</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
-          var k2 = c.querySelector(".chk");
-          k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
-          k2.addEventListener("change", function(){ ticks[id] = k2.checked; save({tick:id}); render(); });
-          c.addEventListener("click", function(){ if (dragState.moved) return; var cal = document.getElementById("cal"); keepScroll = cal ? cal.scrollTop : null; sel = (sel===id) ? null : id; render(); });
-          if (canDrag) attachDrag(c, x);
-          cell.appendChild(c);
-          if (sel===id) selected = { x:x, id:id, isDone:isDone, date:x.date };
-        });
-        grid.appendChild(cell);
-        if (selected && !selected.placedPanel && ymd(selected.date) === ds) {
-          var panel = document.createElement("div"); panel.id = "panel"; panel.appendChild(selected.add ? addForm(selected) : detail(selected)); grid.appendChild(panel); selected.placedPanel = true;
-        }
-      })(di);
-    }
-    body.appendChild(grid);
-  });
+  var selected = null;
+  var w = weeks[viewWeek], t = weekTotals(byDate, w), isCur = viewWeek === curIdx;
+  var row = document.createElement("div"); row.className = "wkrow" + (isCur ? " cur" : "");
+  row.innerHTML = '<span class="lbl">'+rangeLabel(w.start, w.end)+(isCur ? ' <b>· This week</b>' : '')+'</span><span class="r">'+(t.any ? '<b>'+fmtKm(t.lo,t.hi)+'</b> · '+fmtMin(t.min) : 'Nothing planned yet')+'</span>';
+  body.appendChild(row);
+  var grid = document.createElement("div"); grid.className = "grid";
+  for (var di = 0; di < 7; di++) {
+    (function(di){
+      var date = addDays(w.start, di), ds = ymd(date), items = byDate[ds] || [], addId = "add:"+ds, isToday = ds === today;
+      var cell = document.createElement("div"); cell.className = "daycell" + (isToday ? " today" : "") + (!items.length ? " empty" : ""); cell.setAttribute("data-date", ds);
+      cell.innerHTML = '<div class="dn"><span class="dow">'+DAYS[di]+'</span><span class="num tnum">'+date.getDate()+'</span></div>';
+      if (!items.length) {
+        var r = document.createElement("div"); r.className = "cell rest";
+        r.innerHTML = '<div class="row"><span class="bar"></span><div style="min-width:0"><div class="ttl">Rest day</div><div class="sub">rest</div></div></div><button type="button" class="addrun'+(sel===addId?' on':'')+'">+ Add run</button>';
+        r.querySelector(".addrun").addEventListener("click", function(ev){ ev.stopPropagation(); sel = (sel===addId) ? null : addId; render(); });
+        if (sel===addId) selected = { add:true, date:date, day:DAYS[di] };
+        cell.appendChild(r);
+      }
+      items.forEach(function(x){
+        var s = x.s, id = x.id, isDone = x.isDone, canDrag = !x.extra;
+        var c = document.createElement("button"); c.type = "button";
+        c.className = "cell press" + (isDone?" done":"") + (sel===id?" sel":"") + (canDrag?" drag":"");
+        c.innerHTML = '<div class="row"><span class="bar" style="background:'+(s.z ? 'var(--z'+s.z+')' : 'var(--ink100)')+'"></span><div style="min-width:0;flex:1"><div class="ttl">'+tHtml(s)+'</div><div class="sub">'+String(s.sub||s.type||'').split('|').map(function(l){ return '<span>'+l+'</span>'; }).join('')+'</div></div></div>' +
+          '<div class="cft">' + (estLabel(s, x) ? '<span class="km tnum">≈ '+estLabel(s, x)+'</span>' : (s.km ? '<span class="km tnum">'+fmtKm(s.km[0],s.km[1])+'</span>' : '<span></span>')) + '<input class="chk" type="checkbox" id="'+id.replace(/:/g,'-')+'" aria-label="Done: '+tText(s)+'"'+(isDone?" checked":"")+((s.done||x.extra)?" disabled":"")+'></div>';
+        var k2 = c.querySelector(".chk");
+        k2.addEventListener("click", function(ev){ ev.stopPropagation(); }); k2.addEventListener("pointerdown", function(ev){ ev.stopPropagation(); });
+        k2.addEventListener("change", function(){ ticks[id] = k2.checked; save({tick:id}); render(); });
+        c.addEventListener("click", function(){ if (dragState.moved) return; sel = (sel===id) ? null : id; render(); });
+        if (canDrag) attachDrag(c, x);
+        cell.appendChild(c);
+        if (sel===id) selected = { x:x, id:id, isDone:isDone, date:x.date };
+      });
+      grid.appendChild(cell);
+      if (selected && !selected.placedPanel && ymd(selected.date) === ds) {
+        var panel = document.createElement("div"); panel.id = "panel"; panel.appendChild(selected.add ? addForm(selected) : detail(selected)); grid.appendChild(panel); selected.placedPanel = true;
+      }
+    })(di);
+  }
+  body.appendChild(grid);
   cal.appendChild(body);
+  var y = window.scrollY;
   root.innerHTML = ""; root.appendChild(cal);
-  if (keepScroll != null) { cal.scrollTop = keepScroll; keepScroll = null; scrolledOnce = true; }
-  else if (!scrolledOnce && curRow) { scrolledOnce = true; cal.scrollTop = Math.max(0, curRow.offsetTop - 44); }
+  window.scrollTo(0, y);
+  nav.querySelector("#wprev").addEventListener("click", function(){ viewWeek--; sel = null; render(); });
+  nav.querySelector("#wnext").addEventListener("click", function(){ viewWeek++; sel = null; render(); });
+  nav.querySelectorAll(".wtab").forEach(function(b){ b.addEventListener("click", function(){ viewWeek = +b.getAttribute("data-i"); sel = null; render(); }); });
   stats(byDate, weeks); drawLoad(byDate, weeks);
 }
 
@@ -416,7 +439,7 @@ function render(){
 var dragState = { moved:false };
 function attachDrag(el, x){
   var ghost = null, startX = 0, startY = 0, active = false, timer = null, pointerType = "mouse", lastTarget = null;
-  function clearHL(){ document.querySelectorAll(".daycell.over").forEach(function(c){ c.classList.remove("over"); }); }
+  function clearHL(){ document.querySelectorAll(".daycell.over,.wtab.over").forEach(function(c){ c.classList.remove("over"); }); }
   function begin(ev){
     active = true; dragState.moved = true; el.classList.add("dragging");
     ghost = el.cloneNode(true); ghost.className = "cell ghost"; ghost.style.width = el.offsetWidth + "px"; document.body.appendChild(ghost);
@@ -426,7 +449,7 @@ function attachDrag(el, x){
     if (!active || !ghost) return;
     ghost.style.left = (ev.clientX - ghost.offsetWidth/2) + "px"; ghost.style.top = (ev.clientY - 20) + "px";
     ghost.style.display = "none"; var under = document.elementFromPoint(ev.clientX, ev.clientY); ghost.style.display = "";
-    var cell = under && under.closest ? under.closest(".daycell") : null;
+    var cell = under && under.closest ? (under.closest(".daycell") || under.closest(".wtab")) : null;
     if (cell !== lastTarget) { clearHL(); if (cell) cell.classList.add("over"); lastTarget = cell; }
     var cal = document.getElementById("cal"); if (cal) { var rct = cal.getBoundingClientRect(); if (ev.clientY < rct.top + 48) cal.scrollTop -= 10; else if (ev.clientY > rct.bottom - 48) cal.scrollTop += 10; }
   }
@@ -435,7 +458,7 @@ function attachDrag(el, x){
     if (!active) return; active = false;
     var target = lastTarget; lastTarget = null; clearHL(); if (ghost) ghost.remove(); ghost = null; el.classList.remove("dragging");
     var cal = document.getElementById("cal"); keepScroll = cal ? cal.scrollTop : null;
-    if (target) { var ds = target.getAttribute("data-date"); if (ds && ds !== x.dateStr) { moves[x.wi] = moves[x.wi] || {}; moves[x.wi][x.si] = ds; save({move:x.wi+":"+x.si, day:ds}); render(); setTimeout(function(){ dragState.moved = false; }, 50); return; } }
+    if (target) { var ds = target.getAttribute("data-date"); if (!ds && target.getAttribute("data-start")) { ds = ymd(addDays(d(target.getAttribute("data-start")), DAYS.indexOf(x.dow))); viewWeek = +target.getAttribute("data-i"); } if (ds && ds !== x.dateStr) { moves[x.wi] = moves[x.wi] || {}; moves[x.wi][x.si] = ds; save({move:x.wi+":"+x.si, day:ds}); render(); setTimeout(function(){ dragState.moved = false; }, 50); return; } }
     setTimeout(function(){ dragState.moved = false; }, 50);
   }
   el.addEventListener("pointerdown", function(ev){
@@ -532,9 +555,10 @@ function detail(q){
       '<div class="ic">'+icon(isDone?'complete':'run',21,isDone?'#2E8A75':'#15191A')+'</div></div>' +
     '<div class="profwrap"><div class="prof">'+prof+'</div></div>' +
     '<div class="blocks">'+blocks+'</div>' +
-    (x.extra ? '' : '<div class="mv"><span class="lbl">Move to</span>' + DAYS.map(function(dd, i){ var ds = ymd(addDays(wkStart, i)); return '<button type="button" class="pk'+(dd===x.dow?" on":"")+'" data-d="'+ds+'">'+dd.slice(0,1)+dd.slice(1).toLowerCase()+'</button>'; }).join('') + '<span class="mvhint">or drag it on the calendar</span></div>') +
+    (x.extra ? '' : '<div class="mv"><span class="lbl">Move to</span>' + DAYS.map(function(dd, i){ var ds = ymd(addDays(wkStart, i)); return '<button type="button" class="pk'+(dd===x.dow?" on":"")+'" data-d="'+ds+'">'+dd.slice(0,1)+dd.slice(1).toLowerCase()+'</button>'; }).join('') + '<label class="mvdate"><span>Other date</span><input type="date" id="mvdate" value="'+ymd(date)+'" min="'+PLAN[0].start+'" max="'+RACE+'"></label></div>') +
     '<div class="ft">' + (x.extra ? '<button type="button" id="del" class="danger">'+icon('close',18,'#9E4631')+'Delete run</button>' : s.done ? '<div class="on">'+icon('complete',18,'#2E8A75')+'Logged run</div>' : '<button type="button" id="tog" class="'+(isDone?'on':'')+'">'+icon('complete',18,isDone?'#2E8A75':'#2A2E2D')+(isDone?'Logged · tap to undo':'Log as done')+'</button>') + '<button type="button" id="closep">'+icon('close',18,'#2A2E2D')+'Close</button></div>';
-  box.querySelectorAll(".pk").forEach(function(b){ b.addEventListener("click", function(){ var ds = b.getAttribute("data-d"); moves[wi] = moves[wi] || {}; moves[wi][x.si] = ds; keepCal(); save({move:wi+":"+x.si, day:ds}); render(); }); });
+  box.querySelectorAll(".pk").forEach(function(b){ b.addEventListener("click", function(){ var ds = b.getAttribute("data-d"); moves[wi] = moves[wi] || {}; moves[wi][x.si] = ds; save({move:wi+":"+x.si, day:ds}); render(); }); });
+  var mvd = box.querySelector("#mvdate"); if (mvd) mvd.addEventListener("change", function(){ var ds = mvd.value; if (!ds || ds === x.dateStr) return; moves[wi] = moves[wi] || {}; moves[wi][x.si] = ds; var wk = allWeeks(); for (var i = 0; i < wk.length; i++) if (ymd(wk[i].start) <= ds && ymd(wk[i].end) >= ds) viewWeek = i; save({move:wi+":"+x.si, day:ds}); render(); });
   var tog = box.querySelector("#tog"); if (tog) tog.addEventListener("click", function(){ ticks[id] = !isDone; keepCal(); save({tick:id}); render(); });
   var del = box.querySelector("#del"); if (del) del.addEventListener("click", function(){ if (del.getAttribute("data-arm")) { sel = null; deleteExtra(s.xid); } else { del.setAttribute("data-arm","1"); del.innerHTML = icon('close',18,'#9E4631')+'Tap again to delete'; } });
   box.querySelector("#closep").addEventListener("click", function(){ sel = null; keepCal(); render(); });
