@@ -123,7 +123,11 @@ button{font:inherit;color:inherit}
 .addrun{margin-top:auto;align-self:flex-start;background:none;border:1px dashed var(--ink200);border-radius:999px;padding:4px 9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink400);cursor:pointer}
 .addrun:hover,.addrun.on{border-color:var(--mint600);color:var(--mint600);border-style:solid}
 .af{padding:4px 18px 14px}
-.afrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:420px}
+.af{display:flex;flex-direction:column;gap:14px}
+.aff{display:block}
+.aftime{gap:2px}
+.aftime input{width:100%;min-width:0;text-align:center;padding:11px 2px}
+.aftime em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--ink400);padding:0 2px;flex:none}
 .af label{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink400);display:block}
 .afin{display:flex;align-items:center;gap:6px;margin-top:6px;border:1.5px solid var(--ink200);border-radius:4px;padding:0 12px;background:var(--bone)}
 .afin:focus-within{border-color:var(--mint)}
@@ -361,6 +365,31 @@ var PLAN = [
     { day:"SAT", z:1, type:"Easy", kind:"Easy", title:"6.3 km", sub:"6.3 km @ 5:50–7:01", km:[6.3,6.3], min:40,
       steps:[[1,"Easy","6.3 km","Z1 · 5:50–7:01",40]], note:"Properly easy. Slower than feels natural." },
     { day:"SUN", rest:true }
+  ]},
+  { start:"2026-11-02", focus:"Hills · endurance", sessions:[
+    { day:"MON", rest:true },
+    { day:"TUE", rest:true },
+    { day:"WED", z:5, type:"VO2", kind:"Hill sprints", title:"6 × 200 m", sub:"6 × 200 m hill @ hard|2 min jog after each", km:[6.0,6.0], min:34,
+      steps:[[2,"Warm-up","2.0 km","Z2 · 4:56–5:50",11],[5,"Hill sprint","200 m","hard",0.75,{reps:6, rec:[1,"Jog","300 m","Z1 · 5:50–7:01",2]}],[1,"Cool-down","1.0 km","Z1 · 5:50–7:01",6]],
+      note:"Find a steady hill. Powerful and tall, drive the arms. Jog back down for the recovery. Max effort, not a flat-out sprint." },
+    { day:"THU", z:2, type:"Endurance", kind:"Endurance", title:"11 km", sub:"11 km @ 4:56–5:50", km:[11.0,11.0], min:60,
+      steps:[[2,"Endurance","11 km","Z2 · 4:56–5:50",60]], note:"Relaxed and steady. Keep it conversational throughout." },
+    { day:"FRI", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Properly easy — flush the legs out after the hills." },
+    { day:"SAT", rest:true },
+    { day:"SUN", rest:true }
+  ]},
+  { start:"2026-11-09", focus:"VO2", sessions:[
+    { day:"MON", z:1, type:"Easy", kind:"Easy", title:"5.5 km", sub:"5.5 km @ 5:50–7:01", km:[5.5,5.5], min:33,
+      steps:[[1,"Easy","5.5 km","Z1 · 5:50–7:01",33]], note:"Easy ahead of tomorrow's VO2 work." },
+    { day:"TUE", z:5, type:"VO2", kind:"VO2", title:"3 × 1.2 km", sub:"3 × 1.2 km @ 4:00–4:07|0.4 km jog after each", km:[7.8,7.8], min:42,
+      steps:[[2,"Warm-up","2.0 km","Z2 · 4:56–5:50",11],[5,"VO2","1.2 km","4:00–4:07",5,{reps:3, rec:[1,"Jog","0.4 km","Z1 · 5:50–7:01",2]}],[1,"Cool-down","1.0 km","Z1 · 5:50–7:01",6]],
+      note:"5 min efforts, just into VO2 — controlled, strong to the last rep. Not a sprint." },
+    { day:"WED", rest:true },
+    { day:"THU", rest:true },
+    { day:"FRI", rest:true },
+    { day:"SAT", rest:true },
+    { day:"SUN", rest:true }
   ]}
 ];
 var RACE = "2026-12-12";
@@ -400,9 +429,13 @@ function deleteExtra(id){
   return ensureToken().then(function(){ return fetch(SB_URL + "/rest/v1/extras?id=eq." + encodeURIComponent(id), { method:"DELETE", headers: sbHeaders() }); }).then(guard).then(function(){ setSync(true, "Synced"); return pull(); }).catch(function(){ setSync(false, "Couldn't delete. Try again."); });
 }
 function paceOf(km, min){ if (!km || !min) return ""; var sec = Math.round(min*60/km); return Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0")+"/km"; }
+function hms(sec){ sec = Math.max(0, Math.round(sec)); var h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), ss = sec%60; return (h ? h+":"+String(m).padStart(2,"0") : String(m))+":"+String(ss).padStart(2,"0"); }
+function paceStr(secPerKm){ var s = Math.round(secPerKm); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")+"/km"; }
 function extraSession(e){
-  var km = Number(e.km)||0, min = Number(e.min)||0, z = Number(e.zone)||2, pace = paceOf(km, min);
-  return { extra:true, xid:e.id, z:z, type:"Extra", done:true, kind:"Extra run", title:km.toFixed(1)+" km", sub:(pace ? pace+" · " : "")+(min ? min+"'" : ""), km:[km,km], min:min, steps:[[z,"Run",km.toFixed(1)+" km",(pace||"")+(pace&&min?" · ":"")+(min?min+"'":""),min||1]], note:e.note||"" };
+  var km = Number(e.km)||0, sec = Number(e.sec != null ? e.sec : (e.min||0)*60)||0, z = Number(e.zone)||2;
+  var pace = (km && sec) ? paceStr(sec/km) : "", time = sec ? hms(sec) : "";
+  var detail = [pace, time].filter(Boolean).join(" · ");
+  return { extra:true, xid:e.id, z:z, type:"Extra", done:true, kind:"Extra run", title:km.toFixed(1)+" km", secs:sec, sub:detail, km:[km,km], min:sec/60, steps:[[z,"Run",km.toFixed(1)+" km",detail,sec/60]], note:e.note||"" };
 }
 function extrasOn(dateStr){ return extras.filter(function(e){ return e.day === dateStr; }).map(extraSession); }
 function push(rows){
@@ -614,7 +647,8 @@ function estRange(s){
   return [r5(lo), r5(hi)];
 }
 function estLabel(s, x){
-  if (s.done || (x && x.extra)) return s.min ? s.min + " min" : "";
+  if (x && x.extra) return (s.secs != null ? hms(s.secs) : "");
+  if (s.done) return s.min ? s.min + " min" : "";
   var r = estRange(s); if (!r) return "";
   return (r[0] === r[1] ? r[0] : r[0] + "–" + r[1]) + " min";
 }
@@ -695,8 +729,8 @@ function addForm(q){
   box.innerHTML = '<div class="hd"><div><span class="lbl">'+q.day+' '+q.date.getDate()+' '+MON[q.date.getMonth()]+' · Extra run</span><div class="disp">Add a run</div>' +
     '<div class="obj">Something you did that wasn\'t on the plan.</div></div><div class="ic">'+icon('run',21,'#15191A')+'</div></div>' +
     '<form class="af" id="af">' +
-      '<div class="afrow"><label>Distance<div class="afin"><input type="number" inputmode="decimal" step="0.1" min="0.1" id="af-km" required placeholder="0.0"><span>km</span></div></label>' +
-      '<label>Time<div class="afin"><input type="number" inputmode="numeric" step="1" min="1" id="af-min" required placeholder="0"><span>min</span></div></label></div>' +
+      '<label class="aff">Distance<div class="afin"><input type="number" inputmode="decimal" step="0.1" min="0.1" id="af-km" required placeholder="0.0"><span>km</span></div></label>' +
+      '<label class="aff">Time<div class="afin aftime"><input type="number" inputmode="numeric" min="0" max="9" id="af-h" placeholder="0"><em>h</em><input type="number" inputmode="numeric" min="0" max="59" id="af-m" placeholder="00"><em>m</em><input type="number" inputmode="numeric" min="0" max="59" id="af-s" placeholder="00"><em>s</em></div></label>' +
       '<div class="aflbl lbl">How it felt</div><div class="afz">' + [1,2,3,4,5].map(function(z){ return '<button type="button" class="pk zpk'+(z===2?' on':'')+'" data-z="'+z+'" style="--zc:var(--z'+z+')">Z'+z+' · '+ZN[z]+'</button>'; }).join('') + '</div>' +
       '<input type="text" id="af-note" class="afnote" maxlength="120" placeholder="Note (optional)">' +
       '<div class="aferr" id="af-err" hidden></div>' +
@@ -706,11 +740,12 @@ function addForm(q){
   box.querySelectorAll(".zpk").forEach(function(b){ b.addEventListener("click", function(){ zone = Number(b.getAttribute("data-z")); box.querySelectorAll(".zpk").forEach(function(o){ o.classList.toggle("on", o===b); }); }); });
   box.querySelector("#af").addEventListener("submit", function(ev){
     ev.preventDefault();
-    var km = parseFloat(box.querySelector("#af-km").value), min = parseInt(box.querySelector("#af-min").value, 10), err = box.querySelector("#af-err");
-    if (!(km > 0) || !(min > 0)) { err.textContent = "Need a distance and a time."; err.hidden = false; return; }
+    var km = parseFloat(box.querySelector("#af-km").value), err = box.querySelector("#af-err");
+    var sec = (parseInt(box.querySelector("#af-h").value,10)||0)*3600 + (parseInt(box.querySelector("#af-m").value,10)||0)*60 + (parseInt(box.querySelector("#af-s").value,10)||0);
+    if (!(km > 0) || !(sec > 0)) { err.textContent = "Need a distance and a time."; err.hidden = false; return; }
     var btn = box.querySelector("#af-save"); btn.disabled = true; btn.textContent = "Saving…";
     sel = null; keepCal();
-    addExtra({ id: "x" + Date.now().toString(36), day: dateStr, km: Math.round(km*10)/10, min: min, zone: zone, note: box.querySelector("#af-note").value.trim() || null });
+    addExtra({ id: "x" + Date.now().toString(36), day: dateStr, km: Math.round(km*10)/10, sec: sec, zone: zone, note: box.querySelector("#af-note").value.trim() || null });
   });
   box.querySelector("#af-cancel").addEventListener("click", function(){ sel = null; keepCal(); render(); });
   box.querySelector(".hd").addEventListener("click", function(){ sel = null; keepCal(); render(); });

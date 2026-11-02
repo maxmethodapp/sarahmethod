@@ -123,7 +123,11 @@ button{font:inherit;color:inherit}
 .addrun{margin-top:auto;align-self:flex-start;background:none;border:1px dashed var(--ink200);border-radius:999px;padding:4px 9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink400);cursor:pointer}
 .addrun:hover,.addrun.on{border-color:var(--mint600);color:var(--mint600);border-style:solid}
 .af{padding:4px 18px 14px}
-.afrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:420px}
+.af{display:flex;flex-direction:column;gap:14px}
+.aff{display:block}
+.aftime{gap:2px}
+.aftime input{width:100%;min-width:0;text-align:center;padding:11px 2px}
+.aftime em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--ink400);padding:0 2px;flex:none}
 .af label{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink400);display:block}
 .afin{display:flex;align-items:center;gap:6px;margin-top:6px;border:1.5px solid var(--ink200);border-radius:4px;padding:0 12px;background:var(--bone)}
 .afin:focus-within{border-color:var(--mint)}
@@ -493,7 +497,8 @@ function estRange(s){
   return [r5(lo), r5(hi)];
 }
 function estLabel(s, x){
-  if (s.done || (x && x.extra)) return s.min ? s.min + " min" : "";
+  if (x && x.extra) return (s.secs != null ? hms(s.secs) : "");
+  if (s.done) return s.min ? s.min + " min" : "";
   var r = estRange(s); if (!r) return "";
   return (r[0] === r[1] ? r[0] : r[0] + "–" + r[1]) + " min";
 }
@@ -574,8 +579,8 @@ function addForm(q){
   box.innerHTML = '<div class="hd"><div><span class="lbl">'+q.day+' '+q.date.getDate()+' '+MON[q.date.getMonth()]+' · Extra run</span><div class="disp">Add a run</div>' +
     '<div class="obj">Something you did that wasn\'t on the plan.</div></div><div class="ic">'+icon('run',21,'#15191A')+'</div></div>' +
     '<form class="af" id="af">' +
-      '<div class="afrow"><label>Distance<div class="afin"><input type="number" inputmode="decimal" step="0.1" min="0.1" id="af-km" required placeholder="0.0"><span>km</span></div></label>' +
-      '<label>Time<div class="afin"><input type="number" inputmode="numeric" step="1" min="1" id="af-min" required placeholder="0"><span>min</span></div></label></div>' +
+      '<label class="aff">Distance<div class="afin"><input type="number" inputmode="decimal" step="0.1" min="0.1" id="af-km" required placeholder="0.0"><span>km</span></div></label>' +
+      '<label class="aff">Time<div class="afin aftime"><input type="number" inputmode="numeric" min="0" max="9" id="af-h" placeholder="0"><em>h</em><input type="number" inputmode="numeric" min="0" max="59" id="af-m" placeholder="00"><em>m</em><input type="number" inputmode="numeric" min="0" max="59" id="af-s" placeholder="00"><em>s</em></div></label>' +
       '<div class="aflbl lbl">How it felt</div><div class="afz">' + [1,2,3,4,5].map(function(z){ return '<button type="button" class="pk zpk'+(z===2?' on':'')+'" data-z="'+z+'" style="--zc:var(--z'+z+')">Z'+z+' · '+ZN[z]+'</button>'; }).join('') + '</div>' +
       '<input type="text" id="af-note" class="afnote" maxlength="120" placeholder="Note (optional)">' +
       '<div class="aferr" id="af-err" hidden></div>' +
@@ -585,11 +590,12 @@ function addForm(q){
   box.querySelectorAll(".zpk").forEach(function(b){ b.addEventListener("click", function(){ zone = Number(b.getAttribute("data-z")); box.querySelectorAll(".zpk").forEach(function(o){ o.classList.toggle("on", o===b); }); }); });
   box.querySelector("#af").addEventListener("submit", function(ev){
     ev.preventDefault();
-    var km = parseFloat(box.querySelector("#af-km").value), min = parseInt(box.querySelector("#af-min").value, 10), err = box.querySelector("#af-err");
-    if (!(km > 0) || !(min > 0)) { err.textContent = "Need a distance and a time."; err.hidden = false; return; }
+    var km = parseFloat(box.querySelector("#af-km").value), err = box.querySelector("#af-err");
+    var sec = (parseInt(box.querySelector("#af-h").value,10)||0)*3600 + (parseInt(box.querySelector("#af-m").value,10)||0)*60 + (parseInt(box.querySelector("#af-s").value,10)||0);
+    if (!(km > 0) || !(sec > 0)) { err.textContent = "Need a distance and a time."; err.hidden = false; return; }
     var btn = box.querySelector("#af-save"); btn.disabled = true; btn.textContent = "Saving…";
     sel = null; keepCal();
-    addExtra({ id: "x" + Date.now().toString(36), day: dateStr, km: Math.round(km*10)/10, min: min, zone: zone, note: box.querySelector("#af-note").value.trim() || null });
+    addExtra({ id: "x" + Date.now().toString(36), day: dateStr, km: Math.round(km*10)/10, sec: sec, zone: zone, note: box.querySelector("#af-note").value.trim() || null });
   });
   box.querySelector("#af-cancel").addEventListener("click", function(){ sel = null; keepCal(); render(); });
   box.querySelector(".hd").addEventListener("click", function(){ sel = null; keepCal(); render(); });
