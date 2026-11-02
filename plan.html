@@ -721,7 +721,7 @@ function addForm(q){
 
 function drawLoad(byDate, weeks){
   var el = document.getElementById("load-bars"); if (!el) return;
-  var rows = weeks.map(function(w, k){ var t = weekTotals(byDate, w); t.label = rangeLabel(w.start, w.end); t.cur = ymd(w.start)<=today && ymd(w.end)>=today; return t; }).filter(function(t){ return t.any; });
+  var rows = weeks.map(function(w, k){ var t = weekTotals(byDate, w); t.label = rangeLabel(w.start, w.end); t.cur = ymd(w.start)<=today && ymd(w.end)>=today; return t; }).filter(function(t){ return t.any || t.cur; });
   var max = Math.max(10, Math.max.apply(null, rows.map(function(w){ return w.hi; })));
   el.innerHTML = rows.map(function(w){
     var l = w.logged/max*100, p = (w.lo-w.logged)/max*100, r = (w.hi-w.lo)/max*100;
@@ -730,8 +730,8 @@ function drawLoad(byDate, weeks){
       (l>0?'<i class="l" style="width:'+l+'%"></i>':'') + (p>0?'<i class="p" style="width:'+p+'%"></i>':'') + (r>0?'<i class="r" style="width:'+r+'%"></i>':'') +
       '</div><div class="v tnum"><b>'+val+' km</b><small>'+fmtMin(w.min)+'</small></div></div>';
   }).join('');
-  var cur = rows.filter(function(w){return w.cur;})[0] || rows.filter(function(w){return w.plan;})[0];
-  if (cur) document.getElementById("load-sub").innerHTML = "This week <b>" + (cur.lo===cur.hi?cur.lo.toFixed(1):cur.lo.toFixed(1)+"–"+cur.hi.toFixed(1)) + " km</b> · " + fmtMin(cur.min);
+  var cur = rows.filter(function(w){return w.cur;})[0];
+  if (cur) document.getElementById("load-sub").innerHTML = cur.any ? ("This week <b>" + (cur.lo===cur.hi?cur.lo.toFixed(1):cur.lo.toFixed(1)+"–"+cur.hi.toFixed(1)) + " km</b> · " + fmtMin(cur.min)) : "This week · nothing planned yet";
 }
 var pollTimer = null;
 function openApp(){ document.getElementById("app").hidden = false; render(); pull(); if (!pollTimer) pollTimer = setInterval(pull, 60000); }
